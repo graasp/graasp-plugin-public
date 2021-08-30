@@ -20,7 +20,9 @@
     "url": "https://github.com/graasp/graasp-public-items/issues"
   },
   "homepage": "https://github.com/graasp/graasp-public-items#readme",
-  "dependencies": {},
+  "dependencies": {
+    "fastify-cors": "^6.0.2"
+  },
   "devDependencies": {
     "@types/eslint": "^7.2.5",
     "@types/graasp": "git://github.com/graasp/graasp-types.git#master",
