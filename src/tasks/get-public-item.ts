@@ -1,22 +1,45 @@
 // global
-import { Actor, DatabaseTransactionHandler, Item, ItemService } from 'graasp';
+import {
+  Actor,
+  DatabaseTransactionHandler,
+  Item,
+  ItemMembership,
+  ItemMembershipService,
+  ItemService,
+} from "graasp";
 // local
-import { PublicItemService } from '../db-service';
-import { ItemNotFound, ItemNotPublic } from '../util/graasp-public-items';
-import { BasePublicItemTask } from './base-public-item-task';
+import { PublicItemService } from "../db-service";
+import { ItemNotFound, ItemNotPublic } from "../util/graasp-public-items";
+import { BasePublicItemTask } from "./base-public-item-task";
 
-export class GetPublicItemTask extends BasePublicItemTask<Item> {
-  get name(): string { return GetPublicItemTask.name; }
+type ItemWithMemberships = Item | { itemMemberships: ItemMembership[] };
 
-  constructor(actor: Actor, itemId: string, publicItemService: PublicItemService, itemService: ItemService) {
+export class GetPublicItemTask extends BasePublicItemTask<ItemWithMemberships> {
+  get name(): string {
+    return GetPublicItemTask.name;
+  }
+
+  private withMemberships: boolean;
+  private itemMembershipService: ItemMembershipService;
+
+  constructor(
+    actor: Actor,
+    itemId: string,
+    options: { withMemberships: boolean },
+    publicItemService: PublicItemService,
+    itemService: ItemService,
+    itemMembershipService: ItemMembershipService
+  ) {
     super(actor, publicItemService, itemService);
     this.itemService = itemService;
     this.publicItemService = publicItemService;
     this.targetId = itemId;
+    this.withMemberships = options?.withMemberships;
+    this.itemMembershipService = itemMembershipService;
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = 'RUNNING';
+    this.status = "RUNNING";
 
     // get item
     const item = await this.itemService.get(this.targetId, handler);
@@ -27,6 +50,14 @@ export class GetPublicItemTask extends BasePublicItemTask<Item> {
     if (!isPublic) throw new ItemNotPublic(this.targetId);
 
     this._result = item;
-    this.status = 'OK';
+
+    // merge memberships when needed
+    if (this.withMemberships) {
+      const rootMemberships = await this.itemMembershipService.getInheritedForAll(item, handler);
+      const itemMemberships = await this.itemMembershipService.getAllInSubtree(item, handler);
+      this._result = { ...item, itemMemberships: [...rootMemberships, ...itemMemberships] };
+    }
+
+    this.status = "OK";
   }
 }
