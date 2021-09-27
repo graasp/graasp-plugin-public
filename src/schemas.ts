@@ -147,4 +147,20 @@ const getMembers = {
   },
 };
 
-export { getOne, getChildren, getItemsBy, getMember, getMembers };
+const downloadSchema = {
+  params: { $ref: "http://graasp.org/#/definitions/idParam" },
+};
+
+const getMetadataSchema = {
+  params: { $ref: "http://graasp.org/#/definitions/idParam" },
+};
+
+export {
+  getOne,
+  getChildren,
+  getItemsBy,
+  getMember,
+  getMembers,
+  downloadSchema,
+  getMetadataSchema,
+};

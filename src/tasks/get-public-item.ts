@@ -6,15 +6,20 @@ import {
   ItemMembership,
   ItemMembershipService,
   ItemService,
+  UnknownExtra,
 } from "graasp";
 // local
 import { PublicItemService } from "../db-service";
 import { ItemNotFound, ItemNotPublic } from "../util/graasp-public-items";
 import { BasePublicItemTask } from "./base-public-item-task";
 
-type ItemWithMemberships = Item | { itemMemberships: ItemMembership[] };
+interface ItemWithMemberships<E extends UnknownExtra> extends Item<E> {
+  itemMemberships?: ItemMembership[];
+}
 
-export class GetPublicItemTask extends BasePublicItemTask<ItemWithMemberships> {
+export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTask<
+  ItemWithMemberships<E>
+> {
   get name(): string {
     return GetPublicItemTask.name;
   }
@@ -42,7 +47,7 @@ export class GetPublicItemTask extends BasePublicItemTask<ItemWithMemberships> {
     this.status = "RUNNING";
 
     // get item
-    const item = await this.itemService.get(this.targetId, handler);
+    const item = await this.itemService.get<E>(this.targetId, handler);
     if (!item) throw new ItemNotFound(this.targetId);
 
     // check if item is public
