@@ -24,7 +24,6 @@
     "aws-sdk": "^2.793.0",
     "content-disposition": "^0.5.3",
     "fastify-cors": "^6.0.2",
-    "graasp-file-item": "git://github.com/graasp/graasp-file-item.git",
     "graasp-s3-file-item": "git://github.com/graasp/graasp-s3-file-item.git#types"
   },
   "devDependencies": {
