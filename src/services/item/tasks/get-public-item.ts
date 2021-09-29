@@ -10,7 +10,7 @@ import {
 } from "graasp";
 // local
 import { PublicItemService } from "../db-service";
-import { ItemNotFound, ItemNotPublic } from "../util/graasp-public-items";
+import { ItemNotFound, ItemNotPublic } from "../../../util/graasp-public-items";
 import { BasePublicItemTask } from "./base-public-item-task";
 
 interface ItemWithMemberships<E extends UnknownExtra> extends Item<E> {
