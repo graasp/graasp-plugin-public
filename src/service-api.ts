@@ -1,28 +1,35 @@
 // global
 import { FastifyPluginAsync } from "fastify";
-import { Actor, IdParam } from "graasp";
+import { Actor } from "graasp";
 import fastifyCors from "fastify-cors";
+import { GraaspS3FileItemOptions } from "graasp-s3-file-item";
 // local
-import { PublicItemService } from "./db-service";
-import common, { getOne, getChildren } from "./schemas";
-import { GetPublicItemTask } from "./tasks/get-public-item";
-import { GetPublicItemChildrenTask } from "./tasks/get-public-item-children";
+import common from "./schemas";
+import publicItemPlugin from "./services/item/service-api";
+import publicMemberPlugin from "./services/member/service-api";
 
-export interface GraaspItemLoginOptions {
+// todo: import type from package
+interface GraaspFileItemOptions {
+  /**
+   * Filesystem root path where the uploaded files will be saved
+   */
+  storageRootPath: string;
+}
+declare module "fastify" {
+  interface FastifyInstance {
+    s3FileItemPluginOptions?: GraaspS3FileItemOptions;
+    fileItemPluginOptions?: GraaspFileItemOptions;
+  }
+}
+
+export interface GraaspPublicPluginOptions {
   /** id of the tag to look for in the item to check if an item is public */
   tagId: string;
   graaspActor: Actor;
+  enableS3FileItemPlugin?: boolean;
 }
 
-const plugin: FastifyPluginAsync<GraaspItemLoginOptions> = async (fastify, options) => {
-  const { tagId, graaspActor } = options;
-  const {
-    items: { dbService: iS },
-    taskRunner: runner,
-  } = fastify;
-
-  const pIS = new PublicItemService(tagId);
-
+const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
   // add CORS support
   if (fastify.corsPluginOptions) {
     fastify.register(fastifyCors, fastify.corsPluginOptions);
@@ -30,23 +37,8 @@ const plugin: FastifyPluginAsync<GraaspItemLoginOptions> = async (fastify, optio
 
   fastify.addSchema(common);
 
-  fastify.get<{ Params: IdParam }>(
-    "/items/:id",
-    { schema: getOne },
-    async ({ params: { id: itemId }, log }) => {
-      const task = new GetPublicItemTask(graaspActor, itemId, pIS, iS);
-      return runner.runSingle(task, log);
-    }
-  );
-
-  fastify.get<{ Params: IdParam; Querystring: { ordered?: boolean } }>(
-    "/items/:id/children",
-    { schema: getChildren },
-    async ({ params: { id: itemId }, query: { ordered }, log }) => {
-      const task = new GetPublicItemChildrenTask(graaspActor, itemId, pIS, iS, ordered);
-      return runner.runSingle(task, log);
-    }
-  );
+  fastify.register(publicItemPlugin, { ...options, prefix: "/items" });
+  fastify.register(publicMemberPlugin, { ...options, prefix: "/members" });
 };
 
 export default plugin;
