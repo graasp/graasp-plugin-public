@@ -5,10 +5,10 @@ import {
   Item,
   ItemMembershipService,
   ItemService,
-} from "graasp";
+} from 'graasp';
 // local
-import { PublicItemService } from "../db-service";
-import { BasePublicItemTask } from "./base-public-item-task";
+import { PublicItemService } from '../db-service';
+import { BasePublicItemTask } from './base-public-item-task';
 
 export class GetPublicItemWithTagTask extends BasePublicItemTask<readonly Item[]> {
   get name(): string {
@@ -24,7 +24,7 @@ export class GetPublicItemWithTagTask extends BasePublicItemTask<readonly Item[]
     options: { tagId: string; withMemberships?: boolean },
     publicItemService: PublicItemService,
     itemService: ItemService,
-    itemMembershipService: ItemMembershipService
+    itemMembershipService: ItemMembershipService,
   ) {
     super(actor, publicItemService, itemService);
     this.itemService = itemService;
@@ -35,7 +35,7 @@ export class GetPublicItemWithTagTask extends BasePublicItemTask<readonly Item[]
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = "RUNNING";
+    this.status = 'RUNNING';
 
     // get item
     const items = await this.publicItemService.getPublicItemsByTag(this.tagId, handler);
@@ -47,15 +47,15 @@ export class GetPublicItemWithTagTask extends BasePublicItemTask<readonly Item[]
         items.map(async (item) => {
           const rootMemberships = await this.itemMembershipService.getInheritedForAll(
             item,
-            handler
+            handler,
           );
           const itemMemberships = await this.itemMembershipService.getAllInSubtree(item, handler);
           return { ...item, itemMemberships: [...rootMemberships, ...itemMemberships] };
-        })
+        }),
       );
       this._result = itemsWithMemberships;
     }
 
-    this.status = "OK";
+    this.status = 'OK';
   }
 }

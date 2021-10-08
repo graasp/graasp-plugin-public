@@ -1,6 +1,6 @@
 // global
-import { sql, DatabaseTransactionConnectionType as TrxHandler } from "slonik";
-import { Item } from "graasp";
+import { sql, DatabaseTransactionConnectionType as TrxHandler } from 'slonik';
+import { Item } from 'graasp';
 
 export class PublicItemService {
   private tagId: string;
@@ -20,7 +20,7 @@ export class PublicItemService {
         sql`
         SELECT count(*) FROM item_tag
         WHERE tag_id = ${this.tagId} AND item_path @> ${item.path}
-      `
+      `,
       )
       .then((count) => parseInt(count, 10) >= 1);
   }
@@ -32,7 +32,7 @@ export class PublicItemService {
    */
   async getPublicItemsByTag(
     tagId: string,
-    transactionHandler: TrxHandler
+    transactionHandler: TrxHandler,
   ): Promise<readonly Item[]> {
     return transactionHandler
       .query<Item>(
@@ -43,7 +43,7 @@ export class PublicItemService {
           GROUP BY item_path
           HAVING COUNT(*)>=2
         )
-    `
+    `,
       )
       .then(({ rows }) => rows);
   }

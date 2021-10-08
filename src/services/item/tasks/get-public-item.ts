@@ -7,11 +7,11 @@ import {
   ItemMembershipService,
   ItemService,
   UnknownExtra,
-} from "graasp";
+} from 'graasp';
 // local
-import { PublicItemService } from "../db-service";
-import { ItemNotFound, ItemNotPublic } from "../../../util/graasp-public-items";
-import { BasePublicItemTask } from "./base-public-item-task";
+import { PublicItemService } from '../db-service';
+import { ItemNotFound, ItemNotPublic } from '../../../util/graasp-public-items';
+import { BasePublicItemTask } from './base-public-item-task';
 
 interface ItemWithMemberships<E extends UnknownExtra> extends Item<E> {
   itemMemberships?: ItemMembership[];
@@ -33,7 +33,7 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
     options: { withMemberships: boolean },
     publicItemService: PublicItemService,
     itemService: ItemService,
-    itemMembershipService: ItemMembershipService
+    itemMembershipService: ItemMembershipService,
   ) {
     super(actor, publicItemService, itemService);
     this.itemService = itemService;
@@ -44,7 +44,7 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = "RUNNING";
+    this.status = 'RUNNING';
 
     // get item
     const item = await this.itemService.get<E>(this.targetId, handler);
@@ -63,6 +63,6 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
       this._result = { ...item, itemMemberships: [...rootMemberships, ...itemMemberships] };
     }
 
-    this.status = "OK";
+    this.status = 'OK';
   }
 }

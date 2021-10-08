@@ -1,40 +1,34 @@
 // global
-import { FastifyPluginAsync } from "fastify";
-import { Actor, IdParam } from "graasp";
+import { FastifyPluginAsync } from 'fastify';
+import { IdParam } from 'graasp';
+import { GraaspPublicPluginOptions } from '../../service-api';
 // local
-import { getMember, getMembers } from "./schemas";
-import { GetPublicMembersTask } from "./tasks/get-public-members-task";
+import { getMember, getMembers } from './schemas';
+import { GetPublicMembersTask } from './tasks/get-public-members-task';
 
-export interface GraaspItemLoginOptions {
-  /** id of the tag to look for in the item to check if an item is public */
-  tagId: string;
-  graaspActor: Actor;
-  enableS3FileItemPlugin?: boolean;
-}
-
-const plugin: FastifyPluginAsync<GraaspItemLoginOptions> = async (fastify, options) => {
-  const { tagId, graaspActor } = options;
+const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
+  const { graaspActor } = options;
   const {
     taskRunner: runner,
     members: { dbService: mS, taskManager: mT },
   } = fastify;
 
   fastify.get<{ Params: IdParam }>(
-    "/:id",
+    '/:id',
     { schema: getMember },
     async ({ params: { id }, log }) => {
       const task = mT.createGetTask(graaspActor, id);
       return runner.runSingle(task, log);
-    }
+    },
   );
 
   fastify.get<{ Querystring: { id: string[] } }>(
-    "/",
+    '/',
     { schema: getMembers },
     async ({ query: { id: ids }, log }) => {
       const task = new GetPublicMembersTask(graaspActor, ids, mS);
       return runner.runSingle(task, log);
-    }
+    },
   );
 };
 

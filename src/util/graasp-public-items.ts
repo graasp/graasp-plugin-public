@@ -2,7 +2,7 @@ import { GraaspErrorDetails, GraaspError } from 'graasp';
 
 export class GraaspPublicItems implements GraaspError {
   name: string;
-  code: string
+  code: string;
   message: string;
   statusCode?: number;
   data?: unknown;
@@ -29,4 +29,3 @@ export class ItemNotPublic extends GraaspPublicItems {
     super({ code: 'GPIERR002', statusCode: 403, message: 'Item is not public' }, data);
   }
 }
-

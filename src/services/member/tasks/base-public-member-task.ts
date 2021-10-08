@@ -1,7 +1,6 @@
 // global
-import { FastifyLoggerInstance } from "fastify";
-import { Actor, DatabaseTransactionHandler } from "graasp";
-import { Task, TaskStatus } from "graasp";
+import { FastifyLoggerInstance } from 'fastify';
+import { Task, TaskStatus, Actor, DatabaseTransactionHandler } from 'graasp';
 
 export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
   protected _result: R;
@@ -14,7 +13,7 @@ export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
 
   constructor(actor: Actor) {
     this.actor = actor;
-    this.status = "NEW";
+    this.status = 'NEW';
   }
 
   abstract get name(): string;
@@ -27,6 +26,6 @@ export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
 
   abstract run(
     handler: DatabaseTransactionHandler,
-    log: FastifyLoggerInstance
+    log: FastifyLoggerInstance,
   ): Promise<void | BasePublicMemberTask<R>[]>;
 }
