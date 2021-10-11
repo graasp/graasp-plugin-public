@@ -18,7 +18,7 @@ const getMembers = {
   response: {
     200: {
       type: 'array',
-      items: { $ref: 'http://graasp.org/members/#/definitions/member' },
+      items: { $ref: 'http://graasp.org/public-items/#/definitions/member' },
     },
   },
 };

@@ -4,7 +4,6 @@ import {
   DatabaseTransactionHandler,
   Item,
   ItemMembership,
-  ItemMembershipService,
   ItemService,
   UnknownExtra,
 } from 'graasp';
@@ -24,23 +23,16 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
     return GetPublicItemTask.name;
   }
 
-  private withMemberships: boolean;
-  private itemMembershipService: ItemMembershipService;
-
   constructor(
     actor: Actor,
     itemId: string,
-    options: { withMemberships: boolean },
     publicItemService: PublicItemService,
     itemService: ItemService,
-    itemMembershipService: ItemMembershipService,
   ) {
     super(actor, publicItemService, itemService);
     this.itemService = itemService;
     this.publicItemService = publicItemService;
     this.targetId = itemId;
-    this.withMemberships = options?.withMemberships;
-    this.itemMembershipService = itemMembershipService;
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
@@ -55,14 +47,6 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
     if (!isPublic) throw new ItemNotPublic(this.targetId);
 
     this._result = item;
-
-    // merge memberships when needed
-    if (this.withMemberships) {
-      const rootMemberships = await this.itemMembershipService.getInheritedForAll(item, handler);
-      const itemMemberships = await this.itemMembershipService.getAllInSubtree(item, handler);
-      this._result = { ...item, itemMemberships: [...rootMemberships, ...itemMemberships] };
-    }
-
     this.status = 'OK';
   }
 }

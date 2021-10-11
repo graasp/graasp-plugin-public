@@ -1,5 +1,3 @@
-const MAX_TARGETS_FOR_READ_REQUEST = 50;
-
 export default {
   $id: 'http://graasp.org/public-items/',
   definitions: {
@@ -39,7 +37,7 @@ export default {
         itemPath: { type: 'string' },
         // TODO: bug! should allow relative $ref: #/definitions/permission
         // check: https://github.com/fastify/fastify/issues/2328
-        permission: { $ref: 'http://graasp.org/item-memberships/#/definitions/permission' },
+        permission: { $ref: 'http://graasp.org/public-items/#/definitions/permission' },
         creator: { $ref: 'http://graasp.org/#/definitions/uuid' },
         createdAt: { type: 'string' },
         updatedAt: { type: 'string' },

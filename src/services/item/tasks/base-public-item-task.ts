@@ -15,6 +15,12 @@ export abstract class BasePublicItemTask<R> implements Task<Actor, R> {
 
   status: TaskStatus;
   targetId: string;
+  skip?: boolean;
+
+  input: unknown;
+  getInput: () => unknown;
+
+  getResult: () => unknown;
 
   constructor(actor: Actor, publicItemService: PublicItemService, itemService: ItemService) {
     this.actor = actor;
