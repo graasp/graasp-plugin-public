@@ -1,9 +1,9 @@
 // global
-import { FastifyLoggerInstance } from "fastify";
-import { Actor, DatabaseTransactionHandler, ItemService } from "graasp";
-import { Task, TaskStatus } from "graasp";
+import { FastifyLoggerInstance } from 'fastify';
+import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
+import { Task, TaskStatus } from 'graasp';
 // local
-import { PublicItemService } from "../db-service";
+import { PublicItemService } from '../db-service';
 
 export abstract class BasePublicItemTask<R> implements Task<Actor, R> {
   protected publicItemService: PublicItemService;
@@ -15,12 +15,18 @@ export abstract class BasePublicItemTask<R> implements Task<Actor, R> {
 
   status: TaskStatus;
   targetId: string;
+  skip?: boolean;
+
+  input: unknown;
+  getInput: () => unknown;
+
+  getResult: () => unknown;
 
   constructor(actor: Actor, publicItemService: PublicItemService, itemService: ItemService) {
     this.actor = actor;
     this.publicItemService = publicItemService;
     this.itemService = itemService;
-    this.status = "NEW";
+    this.status = 'NEW';
   }
 
   abstract get name(): string;
@@ -33,6 +39,6 @@ export abstract class BasePublicItemTask<R> implements Task<Actor, R> {
 
   abstract run(
     handler: DatabaseTransactionHandler,
-    log: FastifyLoggerInstance
+    log: FastifyLoggerInstance,
   ): Promise<void | BasePublicItemTask<R>[]>;
 }

@@ -1,21 +1,15 @@
 // global
-import { FastifyPluginAsync } from "fastify";
-import { Actor } from "graasp";
-import fastifyCors from "fastify-cors";
-import { GraaspS3FileItemOptions } from "graasp-s3-file-item";
+import { FastifyPluginAsync } from 'fastify';
+import { Actor } from 'graasp';
+import fastifyCors from 'fastify-cors';
+import { GraaspS3FileItemOptions } from 'graasp-plugin-s3-file-item';
+import { GraaspFileItemOptions } from 'graasp-plugin-file-item';
 // local
-import common from "./schemas";
-import publicItemPlugin from "./services/item/service-api";
-import publicMemberPlugin from "./services/member/service-api";
+import common from './schemas/schemas';
+import publicItemPlugin from './services/item/service-api';
+import publicMemberPlugin from './services/member/service-api';
 
-// todo: import type from package
-interface GraaspFileItemOptions {
-  /**
-   * Filesystem root path where the uploaded files will be saved
-   */
-  storageRootPath: string;
-}
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyInstance {
     s3FileItemPluginOptions?: GraaspS3FileItemOptions;
     fileItemPluginOptions?: GraaspFileItemOptions;
@@ -37,8 +31,8 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   fastify.addSchema(common);
 
-  fastify.register(publicItemPlugin, { ...options, prefix: "/items" });
-  fastify.register(publicMemberPlugin, { ...options, prefix: "/members" });
+  fastify.register(publicItemPlugin, { ...options, prefix: '/items' });
+  fastify.register(publicMemberPlugin, { ...options, prefix: '/members' });
 };
 
 export default plugin;

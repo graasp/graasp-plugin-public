@@ -1,7 +1,7 @@
 // global
-import { Actor, DatabaseTransactionHandler, Member, MemberService } from "graasp";
+import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp';
 // local
-import { BasePublicMemberTask } from "./base-public-member-task";
+import { BasePublicMemberTask } from './base-public-member-task';
 
 export class GetPublicMembersTask extends BasePublicMemberTask<Member[]> {
   get name(): string {
@@ -18,15 +18,15 @@ export class GetPublicMembersTask extends BasePublicMemberTask<Member[]> {
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = "RUNNING";
+    this.status = 'RUNNING';
 
     // get member
     // todo: limit properties?
     const members = await Promise.all(
-      this.memberIds.map(async (id) => await this.memberService.get(id, handler))
+      this.memberIds.map(async (id) => await this.memberService.get(id, handler)),
     );
 
     this._result = members;
-    this.status = "OK";
+    this.status = 'OK';
   }
 }
