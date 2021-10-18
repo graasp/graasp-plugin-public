@@ -85,7 +85,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     '/:id',
     { schema: getOne },
     async ({ params: { id: itemId }, query: { withMemberships }, log }) => {
-      const t1 = iTM.createGetTask(graaspActor, itemId);
+      const t1 = new GetPublicItemTask<FileItemExtra>(graaspActor, itemId, pIS, iS);
       const t2 = new MergeItemMembershipsIntoItems(graaspActor, {}, pIS, iS, iMS);
       t2.skip = !withMemberships;
       t2.getInput = () => ({ items: [t1.result] as Item[] });
