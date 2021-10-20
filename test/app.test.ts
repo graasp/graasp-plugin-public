@@ -2,6 +2,7 @@ import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } 
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
+import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
 import build from './app';
 import { buildMember, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 
@@ -84,13 +85,14 @@ describe('Endpoints', () => {
           options: {},
         });
         const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
-        jest.spyOn(runner, 'runSingle').mockImplementation(async () => items);
+        jest.spyOn(runner, 'runSingle').mockImplementation(async () => items.map(({ id }) => id));
+        jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
+        jest.spyOn(runner, 'runMultiple').mockImplementation(async () => items);
 
         const res = await app.inject({
           method: 'GET',
           url: `/p/items?tagId=${PUBLIC_TAG_ID}`,
         });
-
         expect(res.statusCode).toBe(StatusCodes.OK);
         expect(res.json()).toEqual(items);
       });
