@@ -123,14 +123,22 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       // use item manager task to get trigger post hooks (deleted items are removed)
       const t2 = itemIds.map((id) => iTM.createGetTask(graaspActor, id));
       const items = (await runner.runMultiple(t2)) as Item[];
+      // remove unavailable items
+      const validItems = items.filter(({ id }) => id);
 
-      if (withMemberships) {
-        const t3 = new MergeItemMembershipsIntoItems(graaspActor, { items }, pIS, iS, iMS);
-        const result = await runner.runSingle(t3);
-        return result;
+      if (!withMemberships) {
+        return validItems;
       }
 
-      return items;
+      const t3 = new MergeItemMembershipsIntoItems(
+        graaspActor,
+        { items: validItems },
+        pIS,
+        iS,
+        iMS,
+      );
+      const result = await runner.runSingle(t3);
+      return result;
     },
   );
 };
