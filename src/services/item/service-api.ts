@@ -125,11 +125,9 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       const items = (await runner.runMultiple(t2)) as Item[];
       // remove unavailable items
       const validItems = items.filter(({ id }) => id);
-
       if (!withMemberships) {
         return validItems;
       }
-
       const t3 = new MergeItemMembershipsIntoItems(
         graaspActor,
         { items: validItems },
