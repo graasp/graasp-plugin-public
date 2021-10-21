@@ -13,10 +13,13 @@ export const PUBLIC_ITEM_FOLDER: Item = {
   updatedAt: 'updatedAt',
 };
 
+const id1 = v4();
+const id2 = v4();
+
 export const PUBLIC_ITEM_CHILDREN: Item[] = [
   {
-    id: v4(),
-    path: v4().replace(/-/g, '_'),
+    id: id1,
+    path: id1.replace(/-/g, '_'),
     name: 'public-item-children-folder',
     description: 'description',
     type: 'folder',
@@ -26,8 +29,8 @@ export const PUBLIC_ITEM_CHILDREN: Item[] = [
     updatedAt: 'updatedAt',
   },
   {
-    id: v4(),
-    path: v4().replace(/-/g, '_'),
+    id: id2,
+    path: id2.replace(/-/g, '_'),
     name: 'public-item-children-file',
     description: 'description',
     type: 'file',

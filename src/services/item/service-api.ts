@@ -12,7 +12,7 @@ import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graas
 import { PublicItemService } from './db-service';
 import { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema } from './schemas';
 import { GetPublicItemTask } from './tasks/get-public-item-task';
-import { GetPublicItemsWithTagTask } from './tasks/get-public-items-by-tag-task';
+import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
 
@@ -85,7 +85,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     '/:id',
     { schema: getOne },
     async ({ params: { id: itemId }, query: { withMemberships }, log }) => {
-      const t1 = iTM.createGetTask(graaspActor, itemId);
+      const t1 = new GetPublicItemTask<FileItemExtra>(graaspActor, itemId, pIS, iS);
       const t2 = new MergeItemMembershipsIntoItems(graaspActor, {}, pIS, iS, iMS);
       t2.skip = !withMemberships;
       t2.getInput = () => ({ items: [t1.result] as Item[] });
@@ -115,15 +115,28 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
   fastify.get<{ Querystring: { tagId: string; withMemberships?: boolean } }>(
     '/',
     { schema: getItemsBy },
-    async ({ query: { tagId, withMemberships }, log }) => {
-      const t1 = new GetPublicItemsWithTagTask(graaspActor, { tagId }, pIS, iS);
-      const t2 = new MergeItemMembershipsIntoItems(graaspActor, {}, pIS, iS, iMS);
-      t2.getInput = () => ({ items: t1.result as Item[] });
-      t2.skip = !withMemberships;
+    async ({ query: { tagId, withMemberships } }) => {
+      // todo: use only one transaction
+      const t1 = new GetPublicItemIdsWithTagTask(graaspActor, { tagId }, pIS, iS);
+      const itemIds = await runner.runSingle(t1);
+
+      // use item manager task to get trigger post hooks (deleted items are removed)
+      const t2 = itemIds.map((id) => iTM.createGetTask(graaspActor, id));
+      const items = (await runner.runMultiple(t2)) as Item[];
+      // remove unavailable items
+      const validItems = items.filter(({ id }) => id);
       if (!withMemberships) {
-        t2.getResult = () => t1.result;
+        return validItems;
       }
-      return runner.runSingleSequence([t1, t2], log);
+      const t3 = new MergeItemMembershipsIntoItems(
+        graaspActor,
+        { items: validItems },
+        pIS,
+        iS,
+        iMS,
+      );
+      const result = await runner.runSingle(t3);
+      return result;
     },
   );
 };

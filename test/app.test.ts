@@ -2,6 +2,8 @@ import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } 
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
+import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
+import { MergeItemMembershipsIntoItems } from '../src/services/item/tasks/merge-item-memberships-into-item-task';
 import build from './app';
 import { buildMember, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 
@@ -84,17 +86,78 @@ describe('Endpoints', () => {
           options: {},
         });
         const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
-        jest.spyOn(runner, 'runSingle').mockImplementation(async () => items);
+        const runSingleMock = jest
+          .spyOn(runner, 'runSingle')
+          .mockImplementation(async () => items.map(({ id }) => id));
+        jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
+        jest.spyOn(runner, 'runMultiple').mockImplementation(async () => items);
 
         const res = await app.inject({
           method: 'GET',
           url: `/p/items?tagId=${PUBLIC_TAG_ID}`,
         });
+        expect(res.statusCode).toBe(StatusCodes.OK);
+        expect(res.json()).toEqual(items);
+        expect(runSingleMock).toHaveBeenCalledTimes(1);
+      });
 
+      it('Get items by tag id with memberships', async () => {
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+          options: {},
+        });
+        const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
+        const runSingleMock = jest.spyOn(runner, 'runSingle').mockImplementation(async (task) => {
+          if (task instanceof GetPublicItemIdsWithTagTask) {
+            return items.map(({ id }) => id);
+          } else {
+            return items;
+          }
+        });
+        jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
+        jest.spyOn(runner, 'runMultiple').mockImplementation(async () => items);
+        const res = await app.inject({
+          method: 'GET',
+          url: `/p/items?tagId=${PUBLIC_TAG_ID}&withMemberships=true`,
+        });
+        expect(res.statusCode).toBe(StatusCodes.OK);
+        expect(res.json()).toEqual(items);
+        expect(runSingleMock).toHaveBeenCalledTimes(2);
+      });
+
+      it('Remove invalid items', async () => {
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+          options: {},
+        });
+        const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
+        jest.spyOn(runner, 'runSingle').mockImplementation(async (task) => {
+          if (task instanceof GetPublicItemIdsWithTagTask) {
+            return [...items.map(({ id }) => id), { name: 'some error' }];
+          } else {
+            return items;
+          }
+        });
+        jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
+        jest.spyOn(runner, 'runMultiple').mockImplementation(async () => items);
+
+        const res = await app.inject({
+          method: 'GET',
+          url: `/p/items?tagId=${PUBLIC_TAG_ID}`,
+        });
         expect(res.statusCode).toBe(StatusCodes.OK);
         expect(res.json()).toEqual(items);
       });
-      // more exhaustive tests in corresponding task
     });
   });
 

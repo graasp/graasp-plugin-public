@@ -4,9 +4,9 @@ import { Actor, DatabaseTransactionHandler, Item, ItemService } from 'graasp';
 import { PublicItemService } from '../db-service';
 import { BasePublicItemTask } from './base-public-item-task';
 
-export class GetPublicItemsWithTagTask extends BasePublicItemTask<readonly Item[]> {
+export class GetPublicItemIdsWithTagTask extends BasePublicItemTask<readonly string[]> {
   get name(): string {
-    return GetPublicItemsWithTagTask.name;
+    return GetPublicItemIdsWithTagTask.name;
   }
 
   private tagId: string;
@@ -27,8 +27,12 @@ export class GetPublicItemsWithTagTask extends BasePublicItemTask<readonly Item[
     this.status = 'RUNNING';
 
     // get item
-    const items = await this.publicItemService.getPublicItemsByTag(this.tagId, handler);
-    this._result = items;
+    const itemPaths = await this.publicItemService.getPublicItemPathsByTag(this.tagId, handler);
+    const itemIds = itemPaths.map(({ item_path: path }) => {
+      const splitted = path.split('.');
+      return splitted[splitted.length - 1].replace(/_/g, '-');
+    });
+    this._result = itemIds;
 
     this.status = 'OK';
   }

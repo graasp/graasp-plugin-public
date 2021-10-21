@@ -26,23 +26,21 @@ export class PublicItemService {
   }
 
   /**
-   * Check if item has public tag.
-   * @param item Item
+   * Get public item ids which have tag tagId.
+   * @param tagId tag id
    * @param transactionHandler Database transaction handler
    */
-  async getPublicItemsByTag(
+  async getPublicItemPathsByTag(
     tagId: string,
     transactionHandler: TrxHandler,
-  ): Promise<readonly Item[]> {
+  ): Promise<readonly { item_path: string }[]> {
     return transactionHandler
-      .query<Item>(
+      .query<{ item_path: string }>(
         sql`
-        SELECT * from item WHERE path IN (
-          SELECT item_path from item_tag 
-          WHERE tag_id = ${this.tagId} OR tag_id = ${tagId}
-          GROUP BY item_path
-          HAVING COUNT(*)>=2
-        )
+        SELECT item_path from item_tag 
+        WHERE tag_id = ${this.tagId} OR tag_id = ${tagId}
+        GROUP BY item_path
+        HAVING COUNT(*)>=2
     `,
       )
       .then(({ rows }) => rows);
