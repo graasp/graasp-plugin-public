@@ -3,7 +3,6 @@ import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
 import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
-import { MergeItemMembershipsIntoItems } from '../src/services/item/tasks/merge-item-memberships-into-item-task';
 import build from './app';
 import { buildMember, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 
@@ -33,7 +32,6 @@ describe('Endpoints', () => {
           options: {},
         });
 
-        jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
         jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => item);
 
         const res = await app.inject({
@@ -74,6 +72,35 @@ describe('Endpoints', () => {
       });
       // more exhaustive tests in corresponding task
     });
+
+
+    describe('POST /p/items/:id/copy', () => {
+      it('Copy item', async () => {
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+          options: {},
+        });
+        const item = PUBLIC_ITEM_FOLDER;
+        jest.spyOn(taskManager, 'createCopySubTaskSequence').mockImplementation(jest.fn(() => []));
+        jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => item);
+
+        const res = await app.inject({
+          method: 'POST',
+          url: `/p/items/${item.id}/copy`,
+          payload: {}
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.OK);
+        expect(res.json()).toEqual(item);
+      });
+      // more exhaustive tests in corresponding task
+    });
+
     describe('GET /p/items?tagId=<id>', () => {
       it('Get items by tag id', async () => {
         const app = await build({
@@ -158,6 +185,7 @@ describe('Endpoints', () => {
         expect(res.statusCode).toBe(StatusCodes.OK);
         expect(res.json()).toEqual(items);
       });
+
     });
   });
 

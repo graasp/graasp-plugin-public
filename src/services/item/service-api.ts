@@ -10,7 +10,7 @@ import {
 import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graasp-plugin-file-item';
 // local
 import { PublicItemService } from './db-service';
-import { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema } from './schemas';
+import { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema, copyOne } from './schemas';
 import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
@@ -85,7 +85,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     '/:id',
     { schema: getOne },
     async ({ params: { id: itemId }, query: { withMemberships }, log }) => {
-      const t1 = new GetPublicItemTask<FileItemExtra>(graaspActor, itemId, pIS, iS);
+      const t1 = new GetPublicItemTask(graaspActor, itemId, pIS, iS);
       const t2 = new MergeItemMembershipsIntoItems(graaspActor, {}, pIS, iS, iMS);
       t2.skip = !withMemberships;
       t2.getInput = () => ({ items: [t1.result] as Item[] });
@@ -111,6 +111,17 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       return runner.runSingleSequence([t1, t2], log);
     },
   );
+
+  fastify.post<{ Params: IdParam; Querystring: { parentId?: string } }>(
+    '/:id/copy',
+    { schema: copyOne },
+    async ({ params: { id: itemId }, query: { parentId }, log }) => {
+      const t1 = new GetPublicItemTask(graaspActor, itemId, pIS, iS);
+      const copyTasks = iTM.createCopySubTaskSequence(graaspActor, t1, parentId);
+      return runner.runSingleSequence([t1, ...copyTasks], log);
+    },
+  );
+
 
   fastify.get<{ Querystring: { tagId: string; withMemberships?: boolean } }>(
     '/',
