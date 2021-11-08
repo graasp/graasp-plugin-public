@@ -2,6 +2,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import S3 from 'aws-sdk/clients/s3';
 import { IdParam, Item } from 'graasp';
+import graaspPluginThumbnails from 'graasp-plugin-thumbnails';
 import {
   GraaspS3FileItemOptions,
   S3FileItemExtra,
@@ -15,6 +16,7 @@ import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
+import { CannotEditPublicItem } from '../../util/graasp-public-items';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -32,6 +34,17 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
   } = fastify;
 
   const pIS = new PublicItemService(tagId);
+
+  await fastify.register(graaspPluginThumbnails, {
+    enableS3FileItemPlugin: enableS3FileItemPlugin,
+    pluginStoragePrefix: 'thumbnails/items',
+    uploadValidation: async (id) => {
+      throw new CannotEditPublicItem(id);
+    },
+    downloadValidation: async (id) => [new GetPublicItemTask<FileItemExtra>(graaspActor, id, pIS, iS)],
+    // endpoint
+    prefix: '/thumbnails',
+  });
 
   if (enableS3FileItemPlugin) {
     const {

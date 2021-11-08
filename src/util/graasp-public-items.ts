@@ -29,3 +29,15 @@ export class ItemNotPublic extends GraaspPublicItems {
     super({ code: 'GPIERR002', statusCode: 403, message: 'Item is not public' }, data);
   }
 }
+
+export class CannotEditPublicItem extends GraaspPublicItems {
+  constructor(data?: unknown) {
+    super({ code: 'GERR003', statusCode: 400, message: 'Cannot edit public item' }, data);
+  }
+}
+
+export class CannotEditPublicMember extends GraaspPublicItems {
+  constructor(data?: unknown) {
+    super({ code: 'GERR004', statusCode: 400, message: 'Cannot edit public member' }, data);
+  }
+}
