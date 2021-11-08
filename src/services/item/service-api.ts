@@ -112,17 +112,6 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     },
   );
 
-  fastify.post<{ Params: IdParam; Querystring: { parentId?: string } }>(
-    '/:id/copy',
-    { schema: copyOne },
-    async ({ params: { id: itemId }, query: { parentId }, log }) => {
-      const t1 = new GetPublicItemTask(graaspActor, itemId, pIS, iS);
-      const copyTasks = iTM.createCopySubTaskSequence(graaspActor, t1, parentId);
-      return runner.runSingleSequence([t1, ...copyTasks], log);
-    },
-  );
-
-
   fastify.get<{ Querystring: { tagId: string; withMemberships?: boolean } }>(
     '/',
     { schema: getItemsBy },
@@ -150,6 +139,21 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       return result;
     },
   );
+
+  // endpoints requiring authentication 
+  fastify.register(async function (instance) {
+    instance.addHook('preHandler', fastify.verifyAuthentication);
+
+    instance.post<{ Params: IdParam; Body: { parentId?: string } }>(
+      '/:id/copy',
+      { schema: copyOne },
+      async ({ member, params: { id: itemId }, body: { parentId }, log }) => {
+        const t1 = new GetPublicItemTask(member, itemId, pIS, iS);
+        const copyTasks = iTM.createCopySubTaskSequence(member, t1, parentId);
+        return runner.runSingleSequence([t1, ...copyTasks], log);
+      },
+    );
+  });
 };
 
 export default plugin;
