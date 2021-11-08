@@ -28,7 +28,6 @@
     "fastify-cors": "^6.0.2",
     "graasp-plugin-file-item": "github:graasp/graasp-plugin-file-item",
     "graasp-plugin-s3-file-item": "github:graasp/graasp-plugin-s3-file-item",
-    "graasp-plugin-thumbnails": "github:graasp/graasp-plugin-thumbnails#1/init",
     "http-status-codes": "^2.1.4",
     "qs": "^6.10.1"
   },
