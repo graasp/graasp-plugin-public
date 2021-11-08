@@ -26,6 +26,9 @@ const build = async ({
     dbService: memberDbService,
     taskManager: memberTaskManager,
   });
+  app.decorate('fileItemPluginOptions', {
+    storageRootPath: '/'
+  });
 
   await app.register(plugin, { ...options, prefix: '/p' });
 
