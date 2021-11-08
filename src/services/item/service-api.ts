@@ -41,7 +41,9 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     uploadValidation: async (id) => {
       throw new CannotEditPublicItem(id);
     },
-    downloadValidation: async (id) => [new GetPublicItemTask<FileItemExtra>(graaspActor, id, pIS, iS)],
+    downloadValidation: async (id) => [
+      new GetPublicItemTask<FileItemExtra>(graaspActor, id, pIS, iS),
+    ],
     // endpoint
     prefix: '/thumbnails',
   });

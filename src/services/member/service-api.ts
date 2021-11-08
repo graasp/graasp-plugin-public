@@ -21,7 +21,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     uploadValidation: async (id) => {
       throw new CannotEditPublicMember(id);
     },
-    downloadValidation: async (id) => [ mT.createGetTask(graaspActor, id) ],
+    downloadValidation: async (id) => [mT.createGetTask(graaspActor, id)],
     // endpoint
     prefix: '/avatars',
   });

@@ -27,7 +27,7 @@ const build = async ({
     taskManager: memberTaskManager,
   });
   app.decorate('fileItemPluginOptions', {
-    storageRootPath: '/'
+    storageRootPath: '/',
   });
 
   await app.register(plugin, { ...options, prefix: '/p' });
