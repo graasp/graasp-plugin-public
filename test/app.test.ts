@@ -1,5 +1,6 @@
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
+import { v4 } from 'uuid'
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
 import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
@@ -29,7 +30,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
 
         jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => item);
@@ -54,7 +54,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
 
         const children = [item, item];
@@ -73,17 +72,16 @@ describe('Endpoints', () => {
       // more exhaustive tests in corresponding task
     });
 
-
     describe('POST /p/items/:id/copy', () => {
       it('Copy item', async () => {
+        const verifyAuthenticationMock = jest.fn(async () => true);
         const app = await build({
           taskManager,
           runner,
           itemDbService,
           memberDbService,
           itemMemberhipDbService,
-          memberTaskManager,
-          options: {},
+          memberTaskManager, verifyAuthenticationMock
         });
         const item = PUBLIC_ITEM_FOLDER;
         jest.spyOn(taskManager, 'createCopySubTaskSequence').mockImplementation(jest.fn(() => []));
@@ -92,11 +90,36 @@ describe('Endpoints', () => {
         const res = await app.inject({
           method: 'POST',
           url: `/p/items/${item.id}/copy`,
-          payload: {}
+          payload: {
+          },
         });
 
         expect(res.statusCode).toBe(StatusCodes.OK);
         expect(res.json()).toEqual(item);
+        expect(verifyAuthenticationMock).toHaveBeenCalled();
+      });
+      it('Bad request for invalid parent id', async () => {
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+        const item = PUBLIC_ITEM_FOLDER;
+        jest.spyOn(taskManager, 'createCopySubTaskSequence').mockImplementation(jest.fn(() => []));
+        jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => item);
+
+        const res = await app.inject({
+          method: 'POST',
+          url: `/p/items/${item.id}/copy`,
+          payload: {
+            parentId: 'parentId'
+          },
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
       });
       // more exhaustive tests in corresponding task
     });
@@ -110,7 +133,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
         const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
         const runSingleMock = jest
@@ -136,7 +158,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
         const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
         const runSingleMock = jest.spyOn(runner, 'runSingle').mockImplementation(async (task) => {
@@ -165,7 +186,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
         const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
         jest.spyOn(runner, 'runSingle').mockImplementation(async (task) => {
@@ -185,7 +205,6 @@ describe('Endpoints', () => {
         expect(res.statusCode).toBe(StatusCodes.OK);
         expect(res.json()).toEqual(items);
       });
-
     });
   });
 
@@ -199,7 +218,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
 
         const member = buildMember();
@@ -224,7 +242,6 @@ describe('Endpoints', () => {
           memberDbService,
           itemMemberhipDbService,
           memberTaskManager,
-          options: {},
         });
 
         const members = [buildMember(), buildMember()];

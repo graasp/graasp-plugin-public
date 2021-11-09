@@ -58,3 +58,7 @@ export const buildItemMembership = () => ({
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 });
+
+export const DEFAULT_GRAASP_ACTOR = {
+  id: v4(),
+};

@@ -10,7 +10,14 @@ import {
 import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graasp-plugin-file-item';
 // local
 import { PublicItemService } from './db-service';
-import { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema, copyOne } from './schemas';
+import {
+  getOne,
+  getChildren,
+  getItemsBy,
+  downloadSchema,
+  getMetadataSchema,
+  copyOne,
+} from './schemas';
 import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
@@ -140,8 +147,9 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     },
   );
 
-  // endpoints requiring authentication 
+  // endpoints requiring authentication
   fastify.register(async function (instance) {
+    // check member is set in request, necessary to allow access to parent
     instance.addHook('preHandler', fastify.verifyAuthentication);
 
     instance.post<{ Params: IdParam; Body: { parentId?: string } }>(
