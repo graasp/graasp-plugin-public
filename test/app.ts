@@ -1,6 +1,20 @@
 import fastify from 'fastify';
-import plugin from '../src/service-api';
+import plugin, { GraaspPublicPluginOptions } from '../src/service-api';
 import schemas from '../src/schemas/common';
+import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
+import { TaskRunner, ItemTaskManager } from 'graasp-test';
+import { DEFAULT_GRAASP_ACTOR } from './constants';
+
+type props = {
+  taskManager: ItemTaskManager;
+  runner: TaskRunner;
+  itemDbService: ItemService;
+  memberDbService: MemberService;
+  itemMemberhipDbService: ItemMembershipService;
+  memberTaskManager: MemberTaskManager;
+  verifyAuthenticationMock?: () => void;
+  options?: Partial<GraaspPublicPluginOptions>;
+};
 
 const build = async ({
   taskManager,
@@ -9,9 +23,11 @@ const build = async ({
   memberDbService,
   itemMemberhipDbService,
   memberTaskManager,
+  verifyAuthenticationMock,
   options,
-}) => {
+}: props) => {
   const app = fastify();
+  app.decorate('verifyAuthentication', verifyAuthenticationMock ?? jest.fn());
   app.addSchema(schemas);
 
   app.decorate('taskRunner', runner);
@@ -30,7 +46,12 @@ const build = async ({
     storageRootPath: '/',
   });
 
-  await app.register(plugin, { ...options, prefix: '/p' });
+  await app.register(plugin, {
+    tagId: 'sometagid',
+    graaspActor: DEFAULT_GRAASP_ACTOR,
+    ...options,
+    prefix: '/p',
+  });
 
   return app;
 };
