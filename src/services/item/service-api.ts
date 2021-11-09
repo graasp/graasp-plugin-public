@@ -10,7 +10,14 @@ import {
 import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graasp-plugin-file-item';
 // local
 import { PublicItemService } from './db-service';
-import { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema } from './schemas';
+import {
+  getOne,
+  getChildren,
+  getItemsBy,
+  downloadSchema,
+  getMetadataSchema,
+  copyOne,
+} from './schemas';
 import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
@@ -85,7 +92,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     '/:id',
     { schema: getOne },
     async ({ params: { id: itemId }, query: { withMemberships }, log }) => {
-      const t1 = new GetPublicItemTask<FileItemExtra>(graaspActor, itemId, pIS, iS);
+      const t1 = new GetPublicItemTask(graaspActor, itemId, pIS, iS);
       const t2 = new MergeItemMembershipsIntoItems(graaspActor, {}, pIS, iS, iMS);
       t2.skip = !withMemberships;
       t2.getInput = () => ({ items: [t1.result] as Item[] });
@@ -139,6 +146,22 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       return result;
     },
   );
+
+  // endpoints requiring authentication
+  fastify.register(async function (instance) {
+    // check member is set in request, necessary to allow access to parent
+    instance.addHook('preHandler', fastify.verifyAuthentication);
+
+    instance.post<{ Params: IdParam; Body: { parentId?: string } }>(
+      '/:id/copy',
+      { schema: copyOne },
+      async ({ member, params: { id: itemId }, body: { parentId }, log }) => {
+        const t1 = new GetPublicItemTask(member, itemId, pIS, iS);
+        const copyTasks = iTM.createCopySubTaskSequence(member, t1, parentId);
+        return runner.runSingleSequence([t1, ...copyTasks], log);
+      },
+    );
+  });
 };
 
 export default plugin;

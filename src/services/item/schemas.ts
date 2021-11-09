@@ -50,4 +50,17 @@ const getMetadataSchema = {
   params: { $ref: 'http://graasp.org/#/definitions/idParam' },
 };
 
-export { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema };
+
+// schema for copying one item
+const copyOne = {
+  params: { $ref: 'http://graasp.org/#/definitions/idParam' },
+  body: {
+    type: 'object',
+    properties: {
+      parentId: { $ref: 'http://graasp.org/#/definitions/uuid' },
+    },
+    additionalProperties: false,
+  },
+};
+
+export { getOne, getChildren, getItemsBy, downloadSchema, getMetadataSchema, copyOne };
