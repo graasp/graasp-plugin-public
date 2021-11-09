@@ -11,6 +11,10 @@ export const PUBLIC_ITEM_FOLDER: Item = {
   creator: v4(),
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  settings: {
+    isPinned: false,
+    showChatBox: false,
+  }
 };
 
 const id1 = v4();
@@ -27,6 +31,10 @@ export const PUBLIC_ITEM_CHILDREN: Item[] = [
     creator: v4(),
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    settings: {
+      isPinned: false,
+      showChatBox: false,
+    }
   },
   {
     id: id2,
@@ -38,6 +46,10 @@ export const PUBLIC_ITEM_CHILDREN: Item[] = [
     creator: v4(),
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    settings: {
+      isPinned: false,
+      showChatBox: false,
+    }
   },
 ];
 
