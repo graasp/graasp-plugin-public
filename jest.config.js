@@ -12,4 +12,5 @@ module.exports = {
   testEnvironment: 'node',
   // added for jest to look for the dependencies
   modulePaths: ['src/'],
+  transformIgnorePatterns: ['node_modules/(?!graasp-.*)'],
 };
