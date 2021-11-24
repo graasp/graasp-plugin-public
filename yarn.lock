@@ -2801,7 +2801,7 @@ __metadata:
     graasp-plugin-file-item: "github:graasp/graasp-plugin-file-item"
     graasp-plugin-s3-file-item: "github:graasp/graasp-plugin-s3-file-item"
     graasp-plugin-thumbnails: "github:graasp/graasp-plugin-thumbnails"
-    graasp-test: "github:graasp/graasp-test"
+    graasp-test: "github:graasp/graasp-test#7/shouldCopyTags"
     http-status-codes: ^2.1.4
     jest: ^27.2.5
     prettier: ^2.4.1
@@ -2838,10 +2838,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graasp-test@github:graasp/graasp-test":
+"graasp-test@github:graasp/graasp-test#7/shouldCopyTags":
   version: 0.1.0
-  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=1e977025356cb83e4b0428188b5fe96b685a1e7e"
-  checksum: 49f5b0a075292f993de2ce661f43e16aafd281b1135132d1ad73f9875d7d31478eecc59d99dab967c7aa3f7c6f0884879413e2cbb6e3c1bd4a3624e4a9f121b6
+  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=e615d02df0b9c330680cd33c1b82d298fc4e902f"
+  checksum: 2ebf6477b64d2667eabed932c818547c26aa0246203f40cfcc1c297f2bcd59774b33d15a101d5982d607eeeb7dbbdeae174c36f3d6ffc1b0806b6ff255ca92fd
   languageName: node
   linkType: hard
 
