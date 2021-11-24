@@ -822,10 +822,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/graasp@github:graasp/graasp-types":
+"@types/graasp@github:graasp/graasp-types#9/copyHookTypes":
   version: 0.1.0
-  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=803e87c1dc314eb15369a070e3ab96853b9c5d90"
-  checksum: 4518ff894fda7b638ea2f175841ec864d7e0c63257648e4dd88ad191d24b85fdde42f2e0225dcf320bb8007a984ff1ea2c8c153a81e13c530185a609a004d8f8
+  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=63e7cf7da0e342051fa5a486f2d76ff517394d98"
+  checksum: 4118d146c2fa5d6df21985d2ef0e180a9c206c2a6b3bc8e9934594e3f0df08a9d3d67dd9906a8217475f66423c0dca069b6f9e7b5d2c0c7a615f4c9c6b1b320b
   languageName: node
   linkType: hard
 
@@ -2789,7 +2789,7 @@ __metadata:
   resolution: "graasp-plugin-public@workspace:."
   dependencies:
     "@types/eslint": ^7.2.5
-    "@types/graasp": "github:graasp/graasp-types"
+    "@types/graasp": "github:graasp/graasp-types#9/copyHookTypes"
     "@types/jest": ^27.0.2
     "@types/node": ^14.14.7
     "@typescript-eslint/eslint-plugin": ^4.7.0
