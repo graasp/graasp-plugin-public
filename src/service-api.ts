@@ -2,9 +2,8 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Actor } from 'graasp';
 import fastifyCors from 'fastify-cors';
-import { GraaspS3FileItemOptions } from 'graasp-plugin-s3-file-item';
-import { GraaspFileItemOptions } from 'graasp-plugin-file-item';
-// local
+import { GraaspFileItemOptions, GraaspS3FileItemOptions } from 'graasp-plugin-file';
+
 import common from './schemas/schemas';
 import publicItemPlugin from './services/item/service-api';
 import publicMemberPlugin from './services/member/service-api';

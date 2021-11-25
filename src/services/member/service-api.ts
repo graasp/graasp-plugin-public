@@ -1,7 +1,8 @@
 // global
 import { FastifyPluginAsync } from 'fastify';
-import { IdParam } from 'graasp';
-import graaspPluginThumbnails from 'graasp-plugin-thumbnails';
+import { IdParam, Member } from 'graasp';
+import { ServiceMethod } from 'graasp-plugin-file';
+import ThumbnailsPlugin, { buildFilePath, mimetype } from 'graasp-plugin-thumbnails';
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { CannotEditPublicMember } from '../../util/graasp-public-items';
 // local
@@ -15,14 +16,28 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     members: { dbService: mS, taskManager: mT },
   } = fastify;
 
-  await fastify.register(graaspPluginThumbnails, {
-    enableS3FileItemPlugin: enableS3FileItemPlugin,
-    pluginStoragePrefix: 'thumbnails/users',
-    uploadValidation: async (id) => {
+  const pathPrefix = '/avatars/';
+
+  fastify.register(ThumbnailsPlugin, {
+    serviceMethod: enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL,
+    serviceOptions: {
+      s3: fastify.s3FileItemPluginOptions,
+      local: fastify.fileItemPluginOptions,
+    },
+    pathPrefix: pathPrefix,
+
+    uploadPreHookTasks: async (id) => {
       throw new CannotEditPublicMember(id);
     },
-    downloadValidation: async (id) => [mT.createGetTask(graaspActor, id)],
-    // endpoint
+    downloadPreHookTasks: async ({ itemId: id, filename }) => {
+      const task = mT.createGetTask(graaspActor, id);
+      task.getResult = () => ({
+        filepath: buildFilePath((task.result as Member).id, pathPrefix, filename),
+        mimetype: mimetype,
+      });
+      return [ task ];
+    },
+    appsTemplateRoot: '/apps',
     prefix: '/avatars',
   });
 
