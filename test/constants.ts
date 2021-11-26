@@ -74,3 +74,21 @@ export const buildItemMembership = () => ({
 export const DEFAULT_GRAASP_ACTOR = {
   id: v4(),
 };
+
+export const FILE_PATHS = ['./test/files/1.txt', './test/files/2.jpeg'];
+export const files: Partial<Item>[] = [
+  {
+    id: v4(),
+    type: 'file',
+    extra: {
+      file: {
+        name: '1.txt',
+        path: '1.txt',
+        size: 1594447,
+        mimetype: 'text/plain',
+      },
+    },
+  },
+];
+
+export const ITEM_FILE_TXT = files[0];

@@ -1739,13 +1739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-string@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "color-string@npm:1.6.0"
+"color-string@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "color-string@npm:1.7.4"
   dependencies:
     color-name: ^1.0.0
     simple-swizzle: ^0.2.2
-  checksum: 33466a65277dd3d4ce24ef1991b47069292f75d1a43b0d2e7ea43076ba793728e965d50deed2b523f35519f4995a908253fcbcc774baceae8e439bc78c02e850
+  checksum: 7fd872f0105b574c1a931c2cda63a89192eb8740edadbc6a519494f2152ebc3ecea629deeab7b849c4d72942b66355f027d143ea7ac59dc58be2d8a99c6ccee9
   languageName: node
   linkType: hard
 
@@ -1759,12 +1759,12 @@ __metadata:
   linkType: hard
 
 "color@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "color@npm:4.0.1"
+  version: 4.0.2
+  resolution: "color@npm:4.0.2"
   dependencies:
     color-convert: ^2.0.1
-    color-string: ^1.6.0
-  checksum: 46b1e7c6a5d5b1db5e0a8f1f32eea015a1923c9a591cbef67e20b439d67fe8043a7c3beb96c602f0055068909c3ee73bc8ee1817e76a25861a92f64430d6118f
+    color-string: ^1.7.4
+  checksum: 67af1b4ecccd2f6e409c6f98f353eacda027dbbc65b60259f89c09519e9706eba4a5f0ea2a5e100a6555821a52e65880307eee9f641bbf91992bd634f37bf86d
   languageName: node
   linkType: hard
 
@@ -2581,6 +2581,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"form-data@npm:4.0.0":
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    mime-types: ^2.1.12
+  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
+  languageName: node
+  linkType: hard
+
 "form-data@npm:^3.0.0":
   version: 3.0.1
   resolution: "form-data@npm:3.0.1"
@@ -2852,6 +2863,7 @@ __metadata:
     eslint: ^7.13.0
     fastify: ^3.8.0
     fastify-cors: ^6.0.2
+    form-data: 4.0.0
     graasp-plugin-file: "github:graasp/graasp-plugin-file#1/init"
     graasp-plugin-file-item: "github:graasp/graasp-plugin-file-item#18/newFilePlugin"
     graasp-plugin-thumbnails: "github:graasp/graasp-plugin-thumbnails#9/newFilePlugin"
