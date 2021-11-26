@@ -14,7 +14,7 @@ export const PUBLIC_ITEM_FOLDER: Item = {
   settings: {
     isPinned: false,
     showChatBox: false,
-  }
+  },
 };
 
 const id1 = v4();
@@ -34,7 +34,7 @@ export const PUBLIC_ITEM_CHILDREN: Item[] = [
     settings: {
       isPinned: false,
       showChatBox: false,
-    }
+    },
   },
   {
     id: id2,
@@ -49,7 +49,7 @@ export const PUBLIC_ITEM_CHILDREN: Item[] = [
     settings: {
       isPinned: false,
       showChatBox: false,
-    }
+    },
   },
 ];
 

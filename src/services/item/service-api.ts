@@ -1,29 +1,27 @@
-// global
 import { FastifyPluginAsync } from 'fastify';
-import { IdParam, Item } from 'graasp';
+import { IdParam, Item, UnknownExtra } from 'graasp';
 import ThumbnailsPlugin, { buildFilePath, mimetype } from 'graasp-plugin-thumbnails';
-import { FileItemExtra, GraaspFileItemOptions, GraaspS3FileItemOptions, ServiceMethod } from 'graasp-plugin-file';
-
-// local
-import { PublicItemService } from './db-service';
 import {
-  getOne,
-  getChildren,
-  getItemsBy,
-  copyOne,
-} from './schemas';
+  GraaspLocalFileItemOptions,
+  GraaspS3FileItemOptions,
+  S3FileItemExtra,
+  LocalFileItemExtra,
+  ServiceMethod,
+} from 'graasp-plugin-file';
+import { FileItemPlugin } from 'graasp-plugin-file-item';
+
+import { PublicItemService } from './db-service';
+import { getOne, getChildren, getItemsBy, copyOne } from './schemas';
 import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
 import { CannotEditPublicItem } from '../../util/graasp-public-items';
-import { FileItemPlugin } from 'graasp-plugin-file-item';
-
 
 declare module 'fastify' {
   interface FastifyInstance {
     s3FileItemPluginOptions?: GraaspS3FileItemOptions;
-    fileItemPluginOptions?: GraaspFileItemOptions;
+    fileItemPluginOptions?: GraaspLocalFileItemOptions;
   }
 }
 
@@ -37,10 +35,12 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   const pIS = new PublicItemService(tagId);
 
-  const pathPrefix = '/items/';
 
+  const serviceMethod = enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL;
+
+  const pathPrefix = '/items/';
   fastify.register(ThumbnailsPlugin, {
-    serviceMethod: enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL,
+    serviceMethod: serviceMethod,
     serviceOptions: {
       s3: fastify.s3FileItemPluginOptions,
       local: fastify.fileItemPluginOptions,
@@ -53,25 +53,58 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       throw new CannotEditPublicItem(id);
     },
     downloadPreHookTasks: async ({ itemId: id, filename }) => {
-      const task = new GetPublicItemTask<FileItemExtra>(graaspActor, id, pIS, iS);
+      const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
       task.getResult = () => ({
         filepath: buildFilePath((task.result as Item).id, pathPrefix, filename),
         mimetype: mimetype,
       });
-      return [ task ];
+      return [task];
     },
 
     prefix: '/thumbnails',
   });
 
+  const getFileExtra = (
+    extra: UnknownExtra,
+  ): {
+    name: string;
+    path: string;
+    size: string;
+    mimetype: string;
+  } => {
+    switch (serviceMethod) {
+      case ServiceMethod.S3:
+        return (extra as S3FileItemExtra).s3File;
+      case ServiceMethod.LOCAL:
+      default:
+        return (extra as LocalFileItemExtra).file;
+    }
+  };
+
+  const getFilePathFromItemExtra = (extra: UnknownExtra) => {
+    return getFileExtra(extra).path;
+  };
+
+
   fastify.register(FileItemPlugin, {
     shouldLimit: true,
-    storageRootPath: '/files/',
-    serviceMethod: enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL,
+    pathPrefix: '/files/',
+    serviceMethod: serviceMethod,
     serviceOptions: {
       s3: fastify.s3FileItemPluginOptions,
       local: fastify.fileItemPluginOptions,
-    }
+    },
+    uploadPreHookTasks: async (id) => {
+      throw new CannotEditPublicItem(id);
+    },
+    downloadPreHookTasks: async ({ itemId: id }) => {
+      const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
+      task.getResult = () => ({
+        filepath: getFilePathFromItemExtra((task.result as Item).extra),
+        mimetype: mimetype,
+      });
+      return [task];
+    },
   });
 
   fastify.get<{ Params: IdParam; Querystring: { withMemberships?: boolean } }>(

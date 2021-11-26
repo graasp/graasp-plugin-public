@@ -1,11 +1,10 @@
-// global
 import { FastifyPluginAsync } from 'fastify';
 import { IdParam, Member } from 'graasp';
 import { ServiceMethod } from 'graasp-plugin-file';
 import ThumbnailsPlugin, { buildFilePath, mimetype } from 'graasp-plugin-thumbnails';
+
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { CannotEditPublicMember } from '../../util/graasp-public-items';
-// local
 import { getMember, getMembers } from './schemas';
 import { GetPublicMembersTask } from './tasks/get-public-members-task';
 
@@ -35,7 +34,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
         filepath: buildFilePath((task.result as Member).id, pathPrefix, filename),
         mimetype: mimetype,
       });
-      return [ task ];
+      return [task];
     },
     appsTemplateRoot: '/apps',
     prefix: '/avatars',
