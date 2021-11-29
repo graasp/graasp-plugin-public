@@ -167,12 +167,13 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     // check member is set in request, necessary to allow access to parent
     instance.addHook('preHandler', fastify.verifyAuthentication);
 
-    instance.post<{ Params: IdParam; Body: { parentId?: string } }>(
+    instance.post<{ Params: IdParam; Body: { parentId?: string, shouldCopyTags?: boolean } }>(
       '/:id/copy',
       { schema: copyOne },
-      async ({ member, params: { id: itemId }, body: { parentId }, log }) => {
+      async ({ member, params: { id: itemId }, body: { parentId, shouldCopyTags }, log }) => {
         const t1 = new GetPublicItemTask(member, itemId, pIS, iS);
-        const copyTasks = iTM.createCopySubTaskSequence(member, t1, parentId);
+        // do not copy tags by default
+        const copyTasks = iTM.createCopySubTaskSequence(member, t1, { parentId, shouldCopyTags: shouldCopyTags ?? false });
         return runner.runSingleSequence([t1, ...copyTasks], log);
       },
     );

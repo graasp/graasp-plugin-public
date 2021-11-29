@@ -824,8 +824,8 @@ __metadata:
 
 "@types/graasp@github:graasp/graasp-types":
   version: 0.1.0
-  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=803e87c1dc314eb15369a070e3ab96853b9c5d90"
-  checksum: 4518ff894fda7b638ea2f175841ec864d7e0c63257648e4dd88ad191d24b85fdde42f2e0225dcf320bb8007a984ff1ea2c8c153a81e13c530185a609a004d8f8
+  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=6ecd2dd55c9f49381e6ba1c9106af1acf192f78e"
+  checksum: 4118d146c2fa5d6df21985d2ef0e180a9c206c2a6b3bc8e9934594e3f0df08a9d3d67dd9906a8217475f66423c0dca069b6f9e7b5d2c0c7a615f4c9c6b1b320b
   languageName: node
   linkType: hard
 
@@ -2840,8 +2840,8 @@ __metadata:
 
 "graasp-test@github:graasp/graasp-test":
   version: 0.1.0
-  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=1e977025356cb83e4b0428188b5fe96b685a1e7e"
-  checksum: 49f5b0a075292f993de2ce661f43e16aafd281b1135132d1ad73f9875d7d31478eecc59d99dab967c7aa3f7c6f0884879413e2cbb6e3c1bd4a3624e4a9f121b6
+  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=ef09071c4844b5ed0d351f3fb181aebec92402c7"
+  checksum: f69559f5b07b74607142b7ddd0ad3de1f407509091b5ec27633219ace32aaba8dddfc10c88044f0f4bc3e61eccb5edd4a109f626ff5d3c4c35da47f3d7af5e77
   languageName: node
   linkType: hard
 
