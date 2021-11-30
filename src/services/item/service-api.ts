@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import { IdParam, Item, UnknownExtra } from 'graasp';
-import ThumbnailsPlugin, { buildFilePath, mimetype } from 'graasp-plugin-thumbnails';
+import ThumbnailsPlugin, { buildFilePathWithPrefix, THUMBNAIL_MIMETYPE } from 'graasp-plugin-thumbnails';
 import {
   GraaspLocalFileItemOptions,
   GraaspS3FileItemOptions,
@@ -38,7 +38,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   const serviceMethod = enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL;
 
-  const pathPrefix = '/items/';
+  const pathPrefix = 'items/';
   fastify.register(ThumbnailsPlugin, {
     serviceMethod: serviceMethod,
     serviceOptions: {
@@ -47,7 +47,6 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     },
 
     pathPrefix: pathPrefix,
-    appsTemplateRoot: '/apps',
 
     uploadPreHookTasks: async (id) => {
       throw new CannotEditPublicItem(id);
@@ -55,13 +54,11 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     downloadPreHookTasks: async ({ itemId: id, filename }) => {
       const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
       task.getResult = () => ({
-        filepath: buildFilePath((task.result as Item).id, pathPrefix, filename),
-        mimetype: mimetype,
+        filepath: buildFilePathWithPrefix({ itemId: (task.result as Item).id, pathPrefix, filename }),
+        mimetype: THUMBNAIL_MIMETYPE,
       });
       return [task];
     },
-
-    prefix: '/thumbnails',
   });
 
   const getFileExtra = (
@@ -88,7 +85,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   fastify.register(FileItemPlugin, {
     shouldLimit: true,
-    pathPrefix: '/files/',
+    pathPrefix: 'files/',
     serviceMethod: serviceMethod,
     serviceOptions: {
       s3: fastify.s3FileItemPluginOptions,
@@ -100,8 +97,8 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     downloadPreHookTasks: async ({ itemId: id }) => {
       const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
       task.getResult = () => ({
-        filepath: getFilePathFromItemExtra((task.result as Item).extra),
-        mimetype: mimetype,
+        filepath: getFilePathFromItemExtra(task.result.extra),
+        mimetype: getFileExtra(task.result.extra).mimetype,
       });
       return [task];
     },

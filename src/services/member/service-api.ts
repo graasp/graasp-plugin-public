@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import { IdParam, Member } from 'graasp';
 import { ServiceMethod } from 'graasp-plugin-file';
-import ThumbnailsPlugin, { buildFilePath, mimetype } from 'graasp-plugin-thumbnails';
+import ThumbnailsPlugin, { buildFilePathWithPrefix, THUMBNAIL_MIMETYPE } from 'graasp-plugin-thumbnails';
 
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { CannotEditPublicMember } from '../../util/graasp-public-items';
@@ -15,7 +15,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     members: { dbService: mS, taskManager: mT },
   } = fastify;
 
-  const pathPrefix = '/avatars/';
+  const pathPrefix = 'avatars/';
 
   fastify.register(ThumbnailsPlugin, {
     serviceMethod: enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL,
@@ -31,12 +31,11 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     downloadPreHookTasks: async ({ itemId: id, filename }) => {
       const task = mT.createGetTask(graaspActor, id);
       task.getResult = () => ({
-        filepath: buildFilePath((task.result as Member).id, pathPrefix, filename),
-        mimetype: mimetype,
+        filepath: buildFilePathWithPrefix({ itemId: (task.result as Member).id, pathPrefix, filename }),
+        mimetype: THUMBNAIL_MIMETYPE,
       });
       return [task];
     },
-    appsTemplateRoot: '/apps',
     prefix: '/avatars',
   });
 
