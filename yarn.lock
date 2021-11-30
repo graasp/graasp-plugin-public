@@ -1765,12 +1765,12 @@ __metadata:
   linkType: hard
 
 "color-string@npm:^1.7.4":
-  version: 1.8.0
-  resolution: "color-string@npm:1.8.0"
+  version: 1.8.1
+  resolution: "color-string@npm:1.8.1"
   dependencies:
     color-name: ^1.0.0
     simple-swizzle: ^0.2.2
-  checksum: 3ad264a6c3471335df2da9c3ced3114de816945c29a1c327e1963d09e4bdac23abc8259f66a6fe10e0260b1b6fdaeafa81357cbe70a7240199349f357e5b4a53
+  checksum: af51a05d65edc89d7b181e137178f524482c41fbe3885d7f41233878f8c77b59627b48619be6f38a2149266eac958a957ee14ef7d3e1e201e8d618f84a619871
   languageName: node
   linkType: hard
 

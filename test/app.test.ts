@@ -1,12 +1,12 @@
-import FormData from "form-data";
-import { createReadStream } from "fs";
+import FormData from 'form-data';
+import { createReadStream } from 'fs';
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
 
 import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
-import { GetPublicMembersTask } from "../src/services/member/tasks/get-public-members-task";
+import { GetPublicMembersTask } from '../src/services/member/tasks/get-public-members-task';
 import build from './app';
 import { buildMember, FILE_PATHS, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 

@@ -59,6 +59,8 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       });
       return [task];
     },
+    
+    prefix: 'thumbnails/'
   });
 
   const getFileExtra = (
