@@ -52,6 +52,12 @@ const build = async ({
     graaspActor: DEFAULT_GRAASP_ACTOR,
     ...options,
     serviceMethod: ServiceMethod.LOCAL,
+    prefixes: {
+      avatarsPrefix: '',
+      filesPrefix: '',
+      thumbnailsPrefix: ''
+    },
+
     prefix: '/p',
   });
 

@@ -20,6 +20,12 @@ export interface GraaspPublicPluginOptions {
   tagId: string;
   graaspActor: Actor;
   serviceMethod: ServiceMethod;
+
+  prefixes: {
+    avatarsPrefix: string;
+    filesPrefix: string;
+    thumbnailsPrefix: string;
+  }
 }
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
