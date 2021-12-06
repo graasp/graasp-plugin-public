@@ -2774,8 +2774,8 @@ __metadata:
 
 "graasp-plugin-categories@github:graasp/graasp-plugin-categories#9/public":
   version: 0.1.0
-  resolution: "graasp-plugin-categories@https://github.com/graasp/graasp-plugin-categories.git#commit=66d501c934580fe3ae1996abda45aecb817b4813"
-  checksum: 9e8ee46d227f3b596651b0d2c9a4193ea03b6a3807079c29e7620c54a46b5ea63fffb367c7ca462c58d89cb3b6e6844652da251833f582a7436916640bed06f6
+  resolution: "graasp-plugin-categories@https://github.com/graasp/graasp-plugin-categories.git#commit=38cb2a8c9de3c03da3f660f496e7e5aa95a13561"
+  checksum: 702f2ddb371fac1196674cf637c81b71d4e72d9a77e6caa5c98a6b5c9d7cee6ec1a5c501bd7e5e525393d9e8df13aa35c75dda1b71c83dcbca0a1a1b76617a07
   languageName: node
   linkType: hard
 

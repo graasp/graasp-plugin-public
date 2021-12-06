@@ -167,15 +167,15 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
   );
 
   // categories
-  fastify.register(PublicCategoriesPlugin);
+  fastify.register(PublicCategoriesPlugin, { publicActor: graaspActor });
 
   // TODO: optimize
   // get public items in given category(ies)
   fastify.get<{ Querystring: { category: string[] }; }>(
     '/withCategories',
-    async ({ member, query: { category: categoryIds },
+    async ({ query: { category: categoryIds },
       log }) => {
-      const task = new GetItemsByCategoryTask(member, pIS, iS, { categoryIds });
+      const task = new GetItemsByCategoryTask(graaspActor, pIS, iS, { categoryIds });
       const itemIds = await runner.runSingle(task, log);
 
       // use item manager task to get trigger post hooks (deleted items are removed)

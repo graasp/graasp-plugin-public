@@ -1,5 +1,5 @@
 // global
-import { DatabaseTransactionHandler, Item, ItemService, Member } from 'graasp';
+import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 // local
 import { CategoryService } from 'graasp-plugin-categories';
 import { PublicItemService } from '../db-service';
@@ -16,7 +16,7 @@ export class GetItemsByCategoryTask extends BasePublicItemTask<string[]> {
         return GetItemsByCategoryTask.name;
     }
 
-    constructor(member: Member,
+    constructor(member: Actor,
         publicItemService: PublicItemService,
         itemService: ItemService, input: InputType) {
         super(member, publicItemService, itemService);
