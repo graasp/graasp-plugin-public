@@ -4,11 +4,10 @@ import ThumbnailsPlugin, { buildFilePathWithPrefix, THUMBNAIL_MIMETYPE } from 'g
 import {
   GraaspLocalFileItemOptions,
   GraaspS3FileItemOptions,
-  S3FileItemExtra,
-  LocalFileItemExtra,
   ServiceMethod,
+  FileItemExtra,
 } from 'graasp-plugin-file';
-import { FileItemPlugin } from 'graasp-plugin-file-item';
+import { FileItemPlugin, getFilePathFromItemExtra } from 'graasp-plugin-file-item';
 
 import { PublicItemService } from './db-service';
 import { getOne, getChildren, getItemsBy, copyOne } from './schemas';
@@ -17,6 +16,9 @@ import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
 import { CannotEditPublicItem } from '../../util/graasp-public-items';
+import { getFileExtra } from 'graasp-plugin-file-item/dist/helpers';
+
+const PATH_PREFIX = 'items/';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -26,7 +28,7 @@ declare module 'fastify' {
 }
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
-  const { tagId, graaspActor, enableS3FileItemPlugin } = options;
+  const { tagId, graaspActor, serviceMethod } = options;
   const {
     items: { dbService: iS, taskManager: iTM },
     taskRunner: runner,
@@ -35,10 +37,6 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   const pIS = new PublicItemService(tagId);
 
-
-  const serviceMethod = enableS3FileItemPlugin ? ServiceMethod.S3 : ServiceMethod.LOCAL;
-
-  const pathPrefix = 'items/';
   fastify.register(ThumbnailsPlugin, {
     serviceMethod: serviceMethod,
     serviceOptions: {
@@ -46,7 +44,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       local: fastify.fileItemPluginOptions,
     },
 
-    pathPrefix: pathPrefix,
+    pathPrefix: PATH_PREFIX,
 
     uploadPreHookTasks: async (id) => {
       throw new CannotEditPublicItem(id);
@@ -54,35 +52,14 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     downloadPreHookTasks: async ({ itemId: id, filename }) => {
       const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
       task.getResult = () => ({
-        filepath: buildFilePathWithPrefix({ itemId: (task.result as Item).id, pathPrefix, filename }),
+        filepath: buildFilePathWithPrefix({ itemId: (task.result as Item).id, pathPrefix: PATH_PREFIX, filename }),
         mimetype: THUMBNAIL_MIMETYPE,
       });
       return [task];
     },
-    
+
     prefix: 'thumbnails/'
   });
-
-  const getFileExtra = (
-    extra: UnknownExtra,
-  ): {
-    name: string;
-    path: string;
-    size: string;
-    mimetype: string;
-  } => {
-    switch (serviceMethod) {
-      case ServiceMethod.S3:
-        return (extra as S3FileItemExtra).s3File;
-      case ServiceMethod.LOCAL:
-      default:
-        return (extra as LocalFileItemExtra).file;
-    }
-  };
-
-  const getFilePathFromItemExtra = (extra: UnknownExtra) => {
-    return getFileExtra(extra).path;
-  };
 
 
   fastify.register(FileItemPlugin, {
@@ -99,8 +76,8 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     downloadPreHookTasks: async ({ itemId: id }) => {
       const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
       task.getResult = () => ({
-        filepath: getFilePathFromItemExtra(task.result.extra),
-        mimetype: getFileExtra(task.result.extra).mimetype,
+        filepath: getFilePathFromItemExtra(serviceMethod, task.result.extra as FileItemExtra),
+        mimetype: getFileExtra(serviceMethod, task.result.extra as FileItemExtra).mimetype,
       });
       return [task];
     },

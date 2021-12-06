@@ -4,6 +4,7 @@ import schemas from '../src/schemas/common';
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { TaskRunner, ItemTaskManager } from 'graasp-test';
 import { DEFAULT_GRAASP_ACTOR } from './constants';
+import { ServiceMethod } from 'graasp-plugin-file';
 
 type props = {
   taskManager: ItemTaskManager;
@@ -50,6 +51,7 @@ const build = async ({
     tagId: 'sometagid',
     graaspActor: DEFAULT_GRAASP_ACTOR,
     ...options,
+    serviceMethod: ServiceMethod.LOCAL,
     prefix: '/p',
   });
 
