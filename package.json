@@ -27,6 +27,7 @@
   "dependencies": {
     "aws-sdk": "^2.793.0",
     "fastify-cors": "^6.0.2",
+    "graasp-plugin-categories": "github:graasp/graasp-plugin-categories#9/public",
     "graasp-plugin-file-item": "github:graasp/graasp-plugin-file-item",
     "graasp-plugin-s3-file-item": "github:graasp/graasp-plugin-s3-file-item",
     "graasp-plugin-thumbnails": "github:graasp/graasp-plugin-thumbnails",

@@ -2772,6 +2772,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graasp-plugin-categories@github:graasp/graasp-plugin-categories#9/public":
+  version: 0.1.0
+  resolution: "graasp-plugin-categories@https://github.com/graasp/graasp-plugin-categories.git#commit=66d501c934580fe3ae1996abda45aecb817b4813"
+  checksum: 9e8ee46d227f3b596651b0d2c9a4193ea03b6a3807079c29e7620c54a46b5ea63fffb367c7ca462c58d89cb3b6e6844652da251833f582a7436916640bed06f6
+  languageName: node
+  linkType: hard
+
 "graasp-plugin-file-item@github:graasp/graasp-plugin-file-item":
   version: 0.1.0
   resolution: "graasp-plugin-file-item@https://github.com/graasp/graasp-plugin-file-item.git#commit=7de22f4e908a744b4cc5302292e9399919631cb6"
@@ -2798,6 +2805,7 @@ __metadata:
     eslint: ^7.13.0
     fastify: ^3.8.0
     fastify-cors: ^6.0.2
+    graasp-plugin-categories: "github:graasp/graasp-plugin-categories#9/public"
     graasp-plugin-file-item: "github:graasp/graasp-plugin-file-item"
     graasp-plugin-s3-file-item: "github:graasp/graasp-plugin-s3-file-item"
     graasp-plugin-thumbnails: "github:graasp/graasp-plugin-thumbnails"

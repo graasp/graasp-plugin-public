@@ -9,6 +9,7 @@ import {
   GetMetadataFromItemTask,
 } from 'graasp-plugin-s3-file-item';
 import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graasp-plugin-file-item';
+import { PublicCategoriesPlugin } from 'graasp-plugin-categories';
 // local
 import { PublicItemService } from './db-service';
 import {
@@ -24,6 +25,7 @@ import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
 import { CannotEditPublicItem } from '../../util/graasp-public-items';
+import { GetItemsByCategoryTask } from './tasks/get-public-items-by-category-task';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -32,12 +34,14 @@ declare module 'fastify' {
   }
 }
 
+
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
-  const { tagId, graaspActor, enableS3FileItemPlugin } = options;
+  const { tagId, graaspActor, enableS3FileItemPlugin, publishedTagId } = options;
   const {
     items: { dbService: iS, taskManager: iTM },
     taskRunner: runner,
     itemMemberships: { dbService: iMS },
+    db
   } = fastify;
 
   const pIS = new PublicItemService(tagId);
@@ -162,6 +166,32 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     },
   );
 
+  // categories
+  fastify.register(PublicCategoriesPlugin);
+
+  // TODO: optimize
+  // get public items in given category(ies)
+  fastify.get<{ Querystring: { category: string[] }; }>(
+    '/withCategories',
+    async ({ member, query: { category: categoryIds },
+      log }) => {
+      const task = new GetItemsByCategoryTask(member, pIS, iS, { categoryIds });
+      const itemIds = await runner.runSingle(task, log);
+
+      // use item manager task to get trigger post hooks (deleted items are removed)
+      const t2 = itemIds.map((id) => iTM.createGetTask(graaspActor, id));
+      const items = (await runner.runMultiple(t2)) as Item[];
+
+      // filter out to keep public items 
+      const result = items.filter((item) =>
+        pIS.hasPublicTag(item, db.pool) &&
+        pIS.hasTag(item, publishedTagId, db.pool)
+      );
+
+      return result;
+    },
+  );
+
   // endpoints requiring authentication
   fastify.register(async function (instance) {
     // check member is set in request, necessary to allow access to parent
@@ -178,6 +208,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       },
     );
   });
+
 };
 
 export default plugin;

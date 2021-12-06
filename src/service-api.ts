@@ -21,6 +21,7 @@ export interface GraaspPublicPluginOptions {
   tagId: string;
   graaspActor: Actor;
   enableS3FileItemPlugin?: boolean;
+  publishedTagId: string;
 }
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
