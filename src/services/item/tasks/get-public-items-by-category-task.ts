@@ -7,6 +7,7 @@ import { BasePublicItemTask } from './base-public-item-task';
 
 type InputType = { categoryIds?: string[] };
 
+// return {itemId}[]
 export class GetItemsByCategoryTask extends BasePublicItemTask<string[]> {
     input: InputType;
     getInput: () => InputType;
