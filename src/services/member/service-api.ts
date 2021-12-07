@@ -3,7 +3,7 @@ import { FastifyPluginAsync } from 'fastify';
 import { IdParam } from 'graasp';
 import graaspPluginThumbnails from 'graasp-plugin-thumbnails';
 import { GraaspPublicPluginOptions } from '../../service-api';
-import { CannotEditPublicMember } from '../../util/graasp-public-items';
+import { CannotEditPublicMember } from '../../util/errors';
 // local
 import { getMember, getMembers } from './schemas';
 import { GetPublicMembersTask } from './tasks/get-public-members-task';

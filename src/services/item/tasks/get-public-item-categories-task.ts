@@ -1,11 +1,10 @@
 // global
-import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp'
+import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 // local
 import { PublicItemService } from '../db-service';
 import { CategoryService, ItemCategory } from 'graasp-plugin-categories';
 import { BasePublicItemTask } from './base-public-item-task';
-import { ItemNotFound } from 'graasp/util/graasp-error';
-import { ItemNotPublic } from '../../../util/graasp-public-items';
+import { ItemNotFound, ItemNotPublic } from '../../../util/errors';
 
 type InputType = { itemId?: string };
 

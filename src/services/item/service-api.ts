@@ -24,7 +24,7 @@ import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
-import { CannotEditPublicItem } from '../../util/graasp-public-items';
+import { CannotEditPublicItem } from '../../util/errors';
 import { GetItemsByCategoryTask } from './tasks/get-public-items-by-category-task';
 import { GetItemCategoriesTask } from './tasks/get-public-item-categories-task';
 
