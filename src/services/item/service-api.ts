@@ -35,14 +35,13 @@ declare module 'fastify' {
   }
 }
 
-
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
   const { tagId, graaspActor, enableS3FileItemPlugin, publishedTagId } = options;
   const {
     items: { dbService: iS, taskManager: iTM },
     taskRunner: runner,
     itemMemberships: { dbService: iMS },
-    db
+    db,
   } = fastify;
 
   const pIS = new PublicItemService(tagId);
@@ -172,22 +171,20 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   // TODO: optimize, this is a temporary solution
   // get public items in given category(ies)
-  fastify.get<{ Querystring: { category: string[] }; }>(
+  fastify.get<{ Querystring: { category: string[] } }>(
     '/withCategories',
-    async ({ query: { category: categoryIds },
-      log }) => {
+    async ({ query: { category: categoryIds }, log }) => {
       const task = new GetItemsByCategoryTask(graaspActor, pIS, iS, { categoryIds });
-      type resultType = { itemId: string }
-      const itemIds = await runner.runSingle(task, log) as unknown as resultType[];
+      type resultType = { itemId: string };
+      const itemIds = (await runner.runSingle(task, log)) as unknown as resultType[];
 
       // use item manager task to get trigger post hooks (deleted items are removed)
       const t2 = itemIds.map(({ itemId }) => iTM.createGetTask(graaspActor, itemId));
       const items = (await runner.runMultiple(t2)) as Item[];
 
-      // filter out to keep public items 
-      const result = items.filter((item) =>
-        pIS.hasPublicTag(item, db.pool) &&
-        pIS.hasTag(item, publishedTagId, db.pool)
+      // filter out to keep public items
+      const result = items.filter(
+        (item) => pIS.hasPublicTag(item, db.pool) && pIS.hasTag(item, publishedTagId, db.pool),
       );
 
       return result;
@@ -195,7 +192,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
   );
 
   //get category of an item
-  fastify.get<{ Params: { itemId: string }; }>(
+  fastify.get<{ Params: { itemId: string } }>(
     '/:itemId/categories',
     async ({ params: { itemId }, log }) => {
       const task = new GetItemCategoriesTask(graaspActor, pIS, iS, { itemId });
@@ -208,18 +205,20 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     // check member is set in request, necessary to allow access to parent
     instance.addHook('preHandler', fastify.verifyAuthentication);
 
-    instance.post<{ Params: IdParam; Body: { parentId?: string, shouldCopyTags?: boolean } }>(
+    instance.post<{ Params: IdParam; Body: { parentId?: string; shouldCopyTags?: boolean } }>(
       '/:id/copy',
       { schema: copyOne },
       async ({ member, params: { id: itemId }, body: { parentId, shouldCopyTags }, log }) => {
         const t1 = new GetPublicItemTask(member, itemId, pIS, iS);
         // do not copy tags by default
-        const copyTasks = iTM.createCopySubTaskSequence(member, t1, { parentId, shouldCopyTags: shouldCopyTags ?? false });
+        const copyTasks = iTM.createCopySubTaskSequence(member, t1, {
+          parentId,
+          shouldCopyTags: shouldCopyTags ?? false,
+        });
         return runner.runSingleSequence([t1, ...copyTasks], log);
       },
     );
   });
-
 };
 
 export default plugin;

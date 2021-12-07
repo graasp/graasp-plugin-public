@@ -9,30 +9,33 @@ type InputType = { categoryIds?: string[] };
 
 // return {itemId}[]
 export class GetItemsByCategoryTask extends BasePublicItemTask<string[]> {
-    input: InputType;
-    getInput: () => InputType;
-    categoryService: CategoryService
+  input: InputType;
+  getInput: () => InputType;
+  categoryService: CategoryService;
 
-    get name(): string {
-        return GetItemsByCategoryTask.name;
-    }
+  get name(): string {
+    return GetItemsByCategoryTask.name;
+  }
 
-    constructor(member: Actor,
-        publicItemService: PublicItemService,
-        itemService: ItemService, input: InputType) {
-        super(member, publicItemService, itemService);
-        this.input = input ?? {};
-        this.categoryService = new CategoryService();
-    }
+  constructor(
+    member: Actor,
+    publicItemService: PublicItemService,
+    itemService: ItemService,
+    input: InputType,
+  ) {
+    super(member, publicItemService, itemService);
+    this.input = input ?? {};
+    this.categoryService = new CategoryService();
+  }
 
-    async run(handler: DatabaseTransactionHandler): Promise<void> {
-        this.status = 'RUNNING';
+  async run(handler: DatabaseTransactionHandler): Promise<void> {
+    this.status = 'RUNNING';
 
-        // get Category (age)
-        const { categoryIds } = this.input;
-        const items = await this.categoryService.getItemsByCategory(categoryIds, handler);
+    // get Category (age)
+    const { categoryIds } = this.input;
+    const items = await this.categoryService.getItemsByCategory(categoryIds, handler);
 
-        this.status = 'OK';
-        this._result = items;
-    }
+    this.status = 'OK';
+    this._result = items;
+  }
 }

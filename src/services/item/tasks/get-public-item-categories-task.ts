@@ -11,16 +11,18 @@ type InputType = { itemId?: string };
 export class GetItemCategoriesTask extends BasePublicItemTask<ItemCategory[]> {
   input: InputType;
   getInput: () => InputType;
-  categoryService: CategoryService
+  categoryService: CategoryService;
 
   get name(): string {
     return GetItemCategoriesTask.name;
   }
 
-  constructor(member: Actor,
+  constructor(
+    member: Actor,
     publicItemService: PublicItemService,
-    itemService: ItemService, input: InputType,) {
-
+    itemService: ItemService,
+    input: InputType,
+  ) {
     super(member, publicItemService, itemService);
     this.input = input ?? {};
     this.categoryService = new CategoryService();

@@ -1,6 +1,6 @@
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
-import { v4 } from 'uuid'
+import { v4 } from 'uuid';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
 import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
@@ -81,7 +81,8 @@ describe('Endpoints', () => {
           itemDbService,
           memberDbService,
           itemMemberhipDbService,
-          memberTaskManager, verifyAuthenticationMock
+          memberTaskManager,
+          verifyAuthenticationMock,
         });
         const item = PUBLIC_ITEM_FOLDER;
         jest.spyOn(taskManager, 'createCopySubTaskSequence').mockImplementation(jest.fn(() => []));
@@ -90,8 +91,7 @@ describe('Endpoints', () => {
         const res = await app.inject({
           method: 'POST',
           url: `/p/items/${item.id}/copy`,
-          payload: {
-          },
+          payload: {},
         });
 
         expect(res.statusCode).toBe(StatusCodes.OK);
@@ -115,7 +115,7 @@ describe('Endpoints', () => {
           method: 'POST',
           url: `/p/items/${item.id}/copy`,
           payload: {
-            parentId: 'parentId'
+            parentId: 'parentId',
           },
         });
 
