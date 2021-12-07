@@ -26,6 +26,7 @@ import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
 import { CannotEditPublicItem } from '../../util/graasp-public-items';
 import { GetItemsByCategoryTask } from './tasks/get-public-items-by-category-task';
+import { GetItemCategoriesTask } from './tasks/get-public-item-categories-task';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -190,6 +191,15 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       );
 
       return result;
+    },
+  );
+
+  //get category of an item
+  fastify.get<{ Params: { itemId: string }; }>(
+    '/:itemId/categories',
+    async ({ params: { itemId }, log }) => {
+      const task = new GetItemCategoriesTask(graaspActor, pIS, iS, { itemId });
+      return runner.runSingle(task, log);
     },
   );
 
