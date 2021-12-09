@@ -50,7 +50,6 @@ const getMetadataSchema = {
   params: { $ref: 'http://graasp.org/#/definitions/idParam' },
 };
 
-
 // schema for copying one item
 const copyOne = {
   params: { $ref: 'http://graasp.org/#/definitions/idParam' },

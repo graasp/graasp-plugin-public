@@ -63,7 +63,7 @@ export default {
           type: 'array',
           items: { $ref: 'http://graasp.org/public-items/#/definitions/itemMembership' },
         },
-        settings: {}
+        settings: {},
       },
       additionalProperties: false,
     },
