@@ -182,10 +182,15 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       const t2 = itemIds.map(({ itemId }) => iTM.createGetTask(graaspActor, itemId));
       const items = (await runner.runMultiple(t2)) as Item[];
 
-      // filter out to keep public items
-      const result = items.filter(
-        (item) => pIS.hasPublicTag(item, db.pool) && pIS.hasTag(item, publishedTagId, db.pool),
-      );
+      // filter out to keep published items only
+      const result = (await Promise.all(items.map(
+        async (item) => {
+          const isAccessible =
+            await pIS.hasPublicTag(item, db.pool) &&
+            await pIS.hasTag(item, publishedTagId, db.pool);
+          return isAccessible ? item : null;
+        },
+      ))).filter(Boolean);
 
       return result;
     },
