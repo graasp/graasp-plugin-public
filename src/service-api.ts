@@ -37,34 +37,3 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 };
 
 export default plugin;
-
-/**
- *
- * import tags
- *
- *        public            published
- * publicTagId      publishedTagId
- *            <<<<- isPublished / isPublic   / get all public items / get all published items
- * will contain main item, members, memberships public calls
- *
- * we only need published for  GET itemsby groups
- *
- *
- *
- * public plugins in each plugin
- * --> sauf memberships, members et item à cause du dep depenencies
- *
- * GET item + COPY
- * GET memberships
- * GET members
- *
- * GET categories    <<<<-   by categories <- if have a good db service call, can use filter out by tagids
- * GET thumbnails
- * GET tags  <<<- get all items by tagid
- *
- * GET chat
- * GET apps
- *
- * ---> import public to use its db-service
- * ---> will import public plugins in graasp-core  + main public
- */

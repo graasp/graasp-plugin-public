@@ -172,7 +172,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
   // TODO: optimize, this is a temporary solution
   // get public items in given category(ies)
   fastify.get<{ Querystring: { category: string[] } }>(
-    '/withCategories',
+    '/with-categories',
     async ({ query: { category: categoryIds }, log }) => {
       const task = new GetItemsByCategoryTask(graaspActor, pIS, iS, { categoryIds });
       type resultType = { itemId: string };
