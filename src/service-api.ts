@@ -2,9 +2,8 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Actor } from 'graasp';
 import fastifyCors from 'fastify-cors';
-import { GraaspS3FileItemOptions } from 'graasp-plugin-s3-file-item';
-import { GraaspFileItemOptions } from 'graasp-plugin-file-item';
-// local
+import { GraaspLocalFileItemOptions, GraaspS3FileItemOptions, ServiceMethod } from 'graasp-plugin-file';
+
 import common from './schemas/schemas';
 import publicItemPlugin from './services/item/service-api';
 import publicMemberPlugin from './services/member/service-api';
@@ -12,7 +11,7 @@ import publicMemberPlugin from './services/member/service-api';
 declare module 'fastify' {
   interface FastifyInstance {
     s3FileItemPluginOptions?: GraaspS3FileItemOptions;
-    fileItemPluginOptions?: GraaspFileItemOptions;
+    fileItemPluginOptions?: GraaspLocalFileItemOptions;
   }
 }
 
@@ -20,7 +19,13 @@ export interface GraaspPublicPluginOptions {
   /** id of the tag to look for in the item to check if an item is public */
   tagId: string;
   graaspActor: Actor;
-  enableS3FileItemPlugin?: boolean;
+  
+  serviceMethod: ServiceMethod;
+  prefixes: {
+    avatarsPrefix: string;
+    filesPrefix: string;
+    thumbnailsPrefix: string;
+  };
   publishedTagId: string;
 }
 

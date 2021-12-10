@@ -1,25 +1,17 @@
-// global
 import { FastifyPluginAsync } from 'fastify';
-import S3 from 'aws-sdk/clients/s3';
 import { IdParam, Item } from 'graasp';
-import graaspPluginThumbnails from 'graasp-plugin-thumbnails';
+import thumbnailsPlugin, { buildFilePathWithPrefix, THUMBNAIL_MIMETYPE } from 'graasp-plugin-thumbnails';
 import {
+  GraaspLocalFileItemOptions,
   GraaspS3FileItemOptions,
-  S3FileItemExtra,
-  GetMetadataFromItemTask,
-} from 'graasp-plugin-s3-file-item';
-import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graasp-plugin-file-item';
+  FileItemExtra,
+} from 'graasp-plugin-file';
+import fileItemPlugin, { getFileExtra } from 'graasp-plugin-file-item';
 import { PublicCategoriesPlugin } from 'graasp-plugin-categories';
+
 // local
 import { PublicItemService } from './db-service';
-import {
-  getOne,
-  getChildren,
-  getItemsBy,
-  downloadSchema,
-  getMetadataSchema,
-  copyOne,
-} from './schemas';
+import { getOne, getChildren, getItemsBy, copyOne } from './schemas';
 import { GetPublicItemTask } from './tasks/get-public-item-task';
 import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-task';
 import { GraaspPublicPluginOptions } from '../../service-api';
@@ -28,15 +20,18 @@ import { CannotEditPublicItem } from '../../util/errors';
 import { GetItemsByCategoryTask } from './tasks/get-public-items-by-category-task';
 import { GetItemCategoriesTask } from './tasks/get-public-item-categories-task';
 
+const THUMBNAIL_ROUTE = '/thumbnails';
+
 declare module 'fastify' {
   interface FastifyInstance {
     s3FileItemPluginOptions?: GraaspS3FileItemOptions;
-    fileItemPluginOptions?: GraaspFileItemOptions;
+    fileItemPluginOptions?: GraaspLocalFileItemOptions;
   }
 }
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
-  const { tagId, graaspActor, enableS3FileItemPlugin, publishedTagId } = options;
+  const { tagId, graaspActor, serviceMethod, prefixes: { filesPrefix, thumbnailsPrefix }, publishedTagId } = options;
+
   const {
     items: { dbService: iS, taskManager: iTM },
     taskRunner: runner,
@@ -46,66 +41,54 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   const pIS = new PublicItemService(tagId);
 
-  await fastify.register(graaspPluginThumbnails, {
-    enableS3FileItemPlugin: enableS3FileItemPlugin,
-    pluginStoragePrefix: 'thumbnails/items',
-    uploadValidation: async (id) => {
+  fastify.register(thumbnailsPlugin, {
+    serviceMethod: serviceMethod,
+    serviceOptions: {
+      s3: fastify.s3FileItemPluginOptions,
+      local: fastify.fileItemPluginOptions,
+    },
+
+    pathPrefix: thumbnailsPrefix,
+
+    uploadPreHookTasks: async (id) => {
       throw new CannotEditPublicItem(id);
     },
-    downloadValidation: async (id) => [
-      new GetPublicItemTask<FileItemExtra>(graaspActor, id, pIS, iS),
-    ],
-    // endpoint
-    prefix: '/thumbnails',
+    downloadPreHookTasks: async ({ itemId: id, filename }) => {
+      const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
+      task.getResult = () => ({
+        filepath: buildFilePathWithPrefix({ itemId: (task.result as Item).id, pathPrefix: thumbnailsPrefix, filename }),
+        mimetype: THUMBNAIL_MIMETYPE,
+      });
+      return [task];
+    },
+
+    prefix: THUMBNAIL_ROUTE,
   });
 
-  if (enableS3FileItemPlugin) {
-    const {
-      s3Region: region,
-      s3Bucket: bucket,
-      s3AccessKeyId: accessKeyId,
-      s3SecretAccessKey: secretAccessKey,
-      s3UseAccelerateEndpoint: useAccelerateEndpoint = false,
-    } = fastify.s3FileItemPluginOptions;
-    const s3 = new S3({
-      region,
-      useAccelerateEndpoint,
-      credentials: { accessKeyId, secretAccessKey },
-    }); // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html
 
-    fastify.get<{ Params: IdParam }>(
-      '/:id/s3-metadata',
-      { schema: getMetadataSchema },
-      async ({ params: { id }, log }) => {
-        const t1 = new GetPublicItemTask<S3FileItemExtra>(graaspActor, id, pIS, iS);
-        const t2 = new GetMetadataFromItemTask(graaspActor, iS, s3, bucket);
-        t2.getInput = () => ({
-          item: t1.result as Item<S3FileItemExtra>,
-        });
-        return runner.runSingleSequence([t1, t2], log);
-      },
-    );
-  } else {
-    fastify.get<{ Params: IdParam }>(
-      '/:id/download',
-      { schema: downloadSchema },
-      async (request, reply) => {
-        const {
-          params: { id },
-          log,
-        } = request;
-
-        const t1 = new GetPublicItemTask<FileItemExtra>(graaspActor, id, pIS, iS);
-        const t2 = new GetFileFromItemTask(graaspActor, {});
-        t2.getInput = () => ({
-          path: fastify.fileItemPluginOptions.storageRootPath,
-          reply,
-          item: t1.result as Item<FileItemExtra>,
-        });
-        return runner.runSingleSequence([t1, t2], log);
-      },
-    );
-  }
+  fastify.register(fileItemPlugin, {
+    shouldLimit: true,
+    pathPrefix: filesPrefix,
+    serviceMethod: serviceMethod,
+    serviceOptions: {
+      s3: fastify.s3FileItemPluginOptions,
+      local: fastify.fileItemPluginOptions,
+    },
+    uploadPreHookTasks: async (id) => {
+      throw new CannotEditPublicItem(id);
+    },
+    downloadPreHookTasks: async ({ itemId: id }) => {
+      const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
+      task.getResult = () => {
+      const extra = getFileExtra(serviceMethod, task.result.extra as FileItemExtra);
+      return {
+        filepath: extra.path,
+        mimetype: extra.mimetype,
+      };
+    };
+      return [task];
+    },
+  });
 
   fastify.get<{ Params: IdParam; Querystring: { withMemberships?: boolean } }>(
     '/:id',

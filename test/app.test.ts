@@ -1,11 +1,14 @@
+import FormData from 'form-data';
+import { createReadStream } from 'fs';
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
-import { v4 } from 'uuid';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
+
 import { GetPublicItemIdsWithTagTask } from '../src/services/item/tasks/get-public-item-ids-by-tag-task';
+import { GetPublicMembersTask } from '../src/services/member/tasks/get-public-members-task';
 import build from './app';
-import { buildMember, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
+import { buildMember, FILE_PATHS, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 
 const taskManager = new ItemTaskManager();
 const runner = new TaskRunner();
@@ -17,6 +20,8 @@ const memberTaskManager = {} as unknown as MemberTaskManager;
 describe('Endpoints', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(runner, 'setTaskPostHookHandler').mockImplementation(() => { return; });
+    jest.spyOn(runner, 'setTaskPreHookHandler').mockImplementation(() => { return; });
   });
 
   describe('Items Endpoints', () => {
@@ -206,6 +211,107 @@ describe('Endpoints', () => {
         expect(res.json()).toEqual(items);
       });
     });
+
+    describe('GET /p/items/:id/download', () => {
+      it('Get a public file', async () => {
+        const item = PUBLIC_ITEM_FOLDER;
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+
+        jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => createReadStream(FILE_PATHS[0]));
+
+        const res = await app.inject({
+          method: 'GET',
+          url: `/p/items/${item.id}/download`,
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.OK);
+        expect(res.body).toBeTruthy();
+      });
+    });
+
+    describe('POST /p/items/upload', () => {
+      it('Upload should alway throw', async () => {
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+
+        const form = new FormData();
+        form.append('file', createReadStream(FILE_PATHS[0]));
+
+        const res = await app.inject({
+          method: 'POST',
+          url: '/p/items/upload',
+          payload: form,
+          headers: form.getHeaders(),
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
+        expect(res.json().message).toEqual('Cannot edit public item');
+      });
+    });
+
+    describe('GET /p/items/thumbnails/:id/download', () => {
+      it('Download Thumbnails', async () => {
+        const item = PUBLIC_ITEM_FOLDER;
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+
+        jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => createReadStream(FILE_PATHS[1]));
+
+        const res = await app.inject({
+          method: 'GET',
+          url: `/p/items/thumbnails/${item.id}/download`,
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.OK);
+        expect(res.body).toBeTruthy();
+      });
+    });
+
+    describe('POST /p/items/thumbnails/upload', () => {
+      it('Upload should alway throw', async () => {
+        const item = PUBLIC_ITEM_FOLDER;
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+
+        const form = new FormData();
+        form.append('file', createReadStream(FILE_PATHS[1]));
+
+        const res = await app.inject({
+          method: 'POST',
+          url: `/p/items/thumbnails/upload?id=${item.id}`,
+          payload: form,
+          headers: form.getHeaders(),
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
+        expect(res.json().message).toEqual('Cannot edit public item');
+      });
+    });
   });
 
   describe('Members Endpoints', () => {
@@ -256,6 +362,58 @@ describe('Endpoints', () => {
         });
         expect(res.statusCode).toBe(StatusCodes.OK);
         expect(res.json()).toEqual(members);
+      });
+    });
+
+    describe('GET /p/members/avatars/:id/download', () => {
+      it('Download avatar', async () => {
+        const member = buildMember();
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+
+        memberTaskManager.createGetTask = jest.fn().mockReturnValue(new GetPublicMembersTask(null, null, null));
+        jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => createReadStream(FILE_PATHS[1]));
+
+        const res = await app.inject({
+          method: 'GET',
+          url: `/p/members/avatars/${member.id}/download`,
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.OK);
+        expect(res.body).toBeTruthy();
+      });
+    });
+
+    describe('POST /p/members/avatars/upload', () => {
+      it('Upload should alway throw', async () => {
+        const member = buildMember();
+        const app = await build({
+          taskManager,
+          runner,
+          itemDbService,
+          memberDbService,
+          itemMemberhipDbService,
+          memberTaskManager,
+        });
+
+        const form = new FormData();
+        form.append('file', createReadStream(FILE_PATHS[1]));
+
+        const res = await app.inject({
+          method: 'POST',
+          url: `/p/members/avatars/upload?id=${member.id}`,
+          payload: form,
+          headers: form.getHeaders(),
+        });
+
+        expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
+        expect(res.json().message).toEqual('Cannot edit public member');
       });
     });
   });
