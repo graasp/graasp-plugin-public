@@ -59,6 +59,7 @@ const build = async ({
     },
 
     prefix: '/p',
+    publishedTagId: 'published-tag-id',
   });
 
   return app;

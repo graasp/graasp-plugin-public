@@ -19,13 +19,14 @@ export interface GraaspPublicPluginOptions {
   /** id of the tag to look for in the item to check if an item is public */
   tagId: string;
   graaspActor: Actor;
+  
   serviceMethod: ServiceMethod;
-
   prefixes: {
     avatarsPrefix: string;
     filesPrefix: string;
     thumbnailsPrefix: string;
-  }
+  };
+  publishedTagId: string;
 }
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {

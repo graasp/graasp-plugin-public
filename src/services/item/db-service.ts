@@ -45,4 +45,22 @@ export class PublicItemService {
       )
       .then(({ rows }) => rows);
   }
+
+  // TODO : use tags plugin
+  /**
+   * Check if item has (local) tag.
+   * @param item Item
+   * @param tagId Tag id
+   * @param transactionHandler Database transaction handler
+   */
+  async hasTag(item: Item, tagId: string, transactionHandler: TrxHandler): Promise<boolean> {
+    return transactionHandler
+      .oneFirst<string>(
+        sql`
+        SELECT count(*) FROM item_tag
+        WHERE tag_id = ${tagId} AND item_path = ${item.path}
+      `,
+      )
+      .then((count) => parseInt(count, 10) === 1);
+  }
 }

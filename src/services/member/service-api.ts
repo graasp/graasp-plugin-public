@@ -3,7 +3,7 @@ import { IdParam, Member } from 'graasp';
 import thumbnailsPlugin, { buildFilePathWithPrefix, THUMBNAIL_MIMETYPE } from 'graasp-plugin-thumbnails';
 
 import { GraaspPublicPluginOptions } from '../../service-api';
-import { CannotEditPublicMember } from '../../util/graasp-public-items';
+import { CannotEditPublicMember } from '../../util/errors';
 import { getMember, getMembers } from './schemas';
 import { GetPublicMembersTask } from './tasks/get-public-members-task';
 
