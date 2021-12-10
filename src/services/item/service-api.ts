@@ -6,7 +6,7 @@ import {
   GraaspS3FileItemOptions,
   FileItemExtra,
 } from 'graasp-plugin-file';
-import fileItemPlugin, { getFilePathFromItemExtra, getFileExtra } from 'graasp-plugin-file-item';
+import fileItemPlugin, { getFileExtra } from 'graasp-plugin-file-item';
 
 import { PublicItemService } from './db-service';
 import { getOne, getChildren, getItemsBy, copyOne } from './schemas';
@@ -15,6 +15,8 @@ import { GetPublicItemIdsWithTagTask } from './tasks/get-public-item-ids-by-tag-
 import { GraaspPublicPluginOptions } from '../../service-api';
 import { MergeItemMembershipsIntoItems } from './tasks/merge-item-memberships-into-item-task';
 import { CannotEditPublicItem } from '../../util/graasp-public-items';
+
+const THUMBNAIL_ROUTE = 'thumbnails/';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -54,7 +56,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       return [task];
     },
 
-    prefix: 'thumbnails/'
+    prefix: THUMBNAIL_ROUTE,
   });
 
 
@@ -71,10 +73,13 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     },
     downloadPreHookTasks: async ({ itemId: id }) => {
       const task = new GetPublicItemTask(graaspActor, id, pIS, iS);
-      task.getResult = () => ({
-        filepath: getFilePathFromItemExtra(serviceMethod, task.result.extra as FileItemExtra),
-        mimetype: getFileExtra(serviceMethod, task.result.extra as FileItemExtra).mimetype,
-      });
+      task.getResult = () => {
+      const extra = getFileExtra(serviceMethod, task.result.extra as FileItemExtra);
+      return {
+        filepath: extra.path,
+        mimetype: extra.mimetype,
+      };
+    };
       return [task];
     },
   });

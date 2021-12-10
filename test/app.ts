@@ -53,9 +53,9 @@ const build = async ({
     ...options,
     serviceMethod: ServiceMethod.LOCAL,
     prefixes: {
-      avatarsPrefix: '',
-      filesPrefix: '',
-      thumbnailsPrefix: ''
+      avatarsPrefix: 'avatarsPrefix',
+      filesPrefix: 'filesPrefix',
+      thumbnailsPrefix: 'thumbnailsPrefix'
     },
 
     prefix: '/p',

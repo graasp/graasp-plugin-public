@@ -7,6 +7,8 @@ import { CannotEditPublicMember } from '../../util/graasp-public-items';
 import { getMember, getMembers } from './schemas';
 import { GetPublicMembersTask } from './tasks/get-public-members-task';
 
+const AVATARS_ROUTE = '/avatars';
+
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
   const { graaspActor, serviceMethod, prefixes: { avatarsPrefix: pathPrefix }} = options;
   const {
@@ -33,7 +35,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
       });
       return [task];
     },
-    prefix: '/avatars',
+    prefix: AVATARS_ROUTE,
   });
 
   fastify.get<{ Params: IdParam }>(
