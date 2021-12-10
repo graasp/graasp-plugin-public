@@ -7,7 +7,6 @@ import {
   FileItemExtra,
 } from 'graasp-plugin-file';
 import fileItemPlugin, { getFileExtra } from 'graasp-plugin-file-item';
-import { GetFileFromItemTask, GraaspFileItemOptions, FileItemExtra } from 'graasp-plugin-file-item';
 import { PublicCategoriesPlugin } from 'graasp-plugin-categories';
 
 // local
@@ -21,7 +20,7 @@ import { CannotEditPublicItem } from '../../util/errors';
 import { GetItemsByCategoryTask } from './tasks/get-public-items-by-category-task';
 import { GetItemCategoriesTask } from './tasks/get-public-item-categories-task';
 
-const THUMBNAIL_ROUTE = 'thumbnails/';
+const THUMBNAIL_ROUTE = '/thumbnails';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -32,7 +31,7 @@ declare module 'fastify' {
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
   const { tagId, graaspActor, serviceMethod, prefixes: { filesPrefix, thumbnailsPrefix }, publishedTagId } = options;
-  
+
   const {
     items: { dbService: iS, taskManager: iTM },
     taskRunner: runner,
