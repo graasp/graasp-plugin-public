@@ -14,7 +14,7 @@ export class PublicItemService {
    * @param item Item
    * @param transactionHandler Database transaction handler
    */
-  async hasPublicTag(item: Item, transactionHandler: TrxHandler): Promise<boolean> {
+  async isPublic(item: Item, transactionHandler: TrxHandler): Promise<boolean> {
     return transactionHandler
       .oneFirst<string>(
         sql`
@@ -23,44 +23,5 @@ export class PublicItemService {
       `,
       )
       .then((count) => parseInt(count, 10) >= 1);
-  }
-
-  /**
-   * Get public item ids which have tag tagId.
-   * @param tagId tag id
-   * @param transactionHandler Database transaction handler
-   */
-  async getPublicItemPathsByTag(
-    tagId: string,
-    transactionHandler: TrxHandler,
-  ): Promise<readonly { item_path: string }[]> {
-    return transactionHandler
-      .query<{ item_path: string }>(
-        sql`
-        SELECT item_path from item_tag 
-        WHERE tag_id = ${this.tagId} OR tag_id = ${tagId}
-        GROUP BY item_path
-        HAVING COUNT(*)>=2
-    `,
-      )
-      .then(({ rows }) => rows);
-  }
-
-  // TODO : use tags plugin
-  /**
-   * Check if item has (local) tag.
-   * @param item Item
-   * @param tagId Tag id
-   * @param transactionHandler Database transaction handler
-   */
-  async hasTag(item: Item, tagId: string, transactionHandler: TrxHandler): Promise<boolean> {
-    return transactionHandler
-      .oneFirst<string>(
-        sql`
-        SELECT count(*) FROM item_tag
-        WHERE tag_id = ${tagId} AND item_path = ${item.path}
-      `,
-      )
-      .then((count) => parseInt(count, 10) === 1);
   }
 }

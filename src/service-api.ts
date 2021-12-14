@@ -1,33 +1,12 @@
 // global
 import { FastifyPluginAsync } from 'fastify';
-import { Actor } from 'graasp';
 import fastifyCors from 'fastify-cors';
-import { GraaspLocalFileItemOptions, GraaspS3FileItemOptions, ServiceMethod } from 'graasp-plugin-file';
 
 import common from './schemas/schemas';
 import publicItemPlugin from './services/item/service-api';
 import publicMemberPlugin from './services/member/service-api';
-
-declare module 'fastify' {
-  interface FastifyInstance {
-    s3FileItemPluginOptions?: GraaspS3FileItemOptions;
-    fileItemPluginOptions?: GraaspLocalFileItemOptions;
-  }
-}
-
-export interface GraaspPublicPluginOptions {
-  /** id of the tag to look for in the item to check if an item is public */
-  tagId: string;
-  graaspActor: Actor;
-  
-  serviceMethod: ServiceMethod;
-  prefixes: {
-    avatarsPrefix: string;
-    filesPrefix: string;
-    thumbnailsPrefix: string;
-  };
-  publishedTagId: string;
-}
+import publicItemMembershipPlugin from './services/item-membership/service-api';
+import { GraaspPublicPluginOptions } from './types';
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
   // add CORS support
@@ -39,6 +18,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
 
   fastify.register(publicItemPlugin, { ...options, prefix: '/items' });
   fastify.register(publicMemberPlugin, { ...options, prefix: '/members' });
+  fastify.register(publicItemMembershipPlugin, { ...options, prefix: '/item-memberships' });
 };
 
 export default plugin;

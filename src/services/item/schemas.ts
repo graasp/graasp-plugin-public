@@ -29,8 +29,10 @@ const getItemsBy = {
   querystring: {
     type: 'object',
     properties: {
-      tagId: { type: 'string' },
-      withMemberships: { type: 'boolean' },
+      tagId: {
+        type: 'array',
+        items: { $ref: 'http://graasp.org/#/definitions/uuid' },
+      },
     },
     additionalProperties: false,
   },

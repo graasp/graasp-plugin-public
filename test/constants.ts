@@ -1,4 +1,4 @@
-import { Item, PermissionLevel } from 'graasp';
+import { Item, ItemMembership, Member } from 'graasp';
 import { v4 } from 'uuid';
 
 export const PUBLIC_ITEM_FOLDER: Item = {
@@ -54,18 +54,21 @@ export const PUBLIC_ITEM_CHILDREN: Item[] = [
 ];
 
 export const PUBLIC_TAG_ID = v4();
+export const PUBLISHED_TAG_ID = v4();
 
-export const buildMember = () => ({
+export const buildMember = (): Partial<Member> => ({
   id: v4(),
   name: 'member',
   email: 'member@email.com',
+  extra: {},
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
 });
 
-export const buildItemMembership = () => ({
+export const buildItemMembership = (): Partial<ItemMembership> => ({
   id: v4(),
   memberId: buildMember().id,
   itemPath: v4().replace(/-/g, '_'),
-  permission: 'read' as PermissionLevel,
   creator: v4(),
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -92,3 +95,11 @@ export const files: Partial<Item>[] = [
 ];
 
 export const ITEM_FILE_TXT = files[0];
+
+// this function can check the returned member and the member fixture
+// the member fixture is more complete
+export const checkMember = (expectedMember, member): void => {
+  expect(member.id).toEqual(expectedMember.id);
+  expect(member.name).toEqual(expectedMember.name);
+  expect(member.email).toEqual(expectedMember.email);
+};
