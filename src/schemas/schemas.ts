@@ -59,10 +59,6 @@ export default {
         creator: { type: 'string' },
         createdAt: {},
         updatedAt: {},
-        itemMemberships: {
-          type: 'array',
-          items: { $ref: 'http://graasp.org/public-items/#/definitions/itemMembership' },
-        },
         settings: {},
       },
       additionalProperties: false,

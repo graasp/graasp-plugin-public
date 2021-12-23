@@ -1,42 +1,16 @@
 import { FastifyPluginAsync } from 'fastify';
-import { IdParam, Member } from 'graasp';
-import thumbnailsPlugin, { buildFilePathWithPrefix, THUMBNAIL_MIMETYPE } from 'graasp-plugin-thumbnails';
+import { IdParam } from 'graasp';
+import { GraaspPublicPluginOptions } from '../../types';
 
-import { GraaspPublicPluginOptions } from '../../service-api';
-import { CannotEditPublicMember } from '../../util/errors';
 import { getMember, getMembers } from './schemas';
 import { GetPublicMembersTask } from './tasks/get-public-members-task';
 
-const AVATARS_ROUTE = '/avatars';
-
-const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
-  const { graaspActor, serviceMethod, prefixes: { avatarsPrefix: pathPrefix }} = options;
+const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify) => {
   const {
     taskRunner: runner,
     members: { dbService: mS, taskManager: mT },
+    public: { graaspActor },
   } = fastify;
-
-  fastify.register(thumbnailsPlugin, {
-    serviceMethod: serviceMethod,
-    serviceOptions: {
-      s3: fastify.s3FileItemPluginOptions,
-      local: fastify.fileItemPluginOptions,
-    },
-    pathPrefix: pathPrefix,
-
-    uploadPreHookTasks: async (id) => {
-      throw new CannotEditPublicMember(id);
-    },
-    downloadPreHookTasks: async ({ itemId: id, filename }) => {
-      const task = mT.createGetTask(graaspActor, id);
-      task.getResult = () => ({
-        filepath: buildFilePathWithPrefix({ itemId: (task.result as Member).id, pathPrefix, filename }),
-        mimetype: THUMBNAIL_MIMETYPE,
-      });
-      return [task];
-    },
-    prefix: AVATARS_ROUTE,
-  });
 
   fastify.get<{ Params: IdParam }>(
     '/:id',
@@ -51,7 +25,7 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, op
     '/',
     { schema: getMembers },
     async ({ query: { id: ids }, log }) => {
-      const task = new GetPublicMembersTask(graaspActor, ids, mS);
+      const task = new GetPublicMembersTask(graaspActor, mS, { memberIds: ids });
       return runner.runSingle(task, log);
     },
   );

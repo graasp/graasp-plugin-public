@@ -1,6 +1,6 @@
 // global
 import { FastifyLoggerInstance } from 'fastify';
-import { Task, TaskStatus, Actor, DatabaseTransactionHandler } from 'graasp';
+import { Task, TaskStatus, Actor, DatabaseTransactionHandler, MemberService } from 'graasp';
 
 export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
   protected _result: R;
@@ -8,12 +8,15 @@ export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
 
   readonly actor: Actor;
 
+  protected memberService: MemberService;
+
   status: TaskStatus;
   targetId: string;
 
-  constructor(actor: Actor) {
+  constructor(actor: Actor, memberService: MemberService) {
     this.actor = actor;
     this.status = 'NEW';
+    this.memberService = memberService;
   }
 
   abstract get name(): string;

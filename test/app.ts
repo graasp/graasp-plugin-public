@@ -1,10 +1,10 @@
 import fastify from 'fastify';
-import plugin, { GraaspPublicPluginOptions } from '../src/service-api';
+import plugin from '../src/service-api';
 import schemas from '../src/schemas/common';
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
-import { TaskRunner, ItemTaskManager } from 'graasp-test';
-import { DEFAULT_GRAASP_ACTOR } from './constants';
-import { ServiceMethod } from 'graasp-plugin-file';
+import { TaskRunner, ItemTaskManager, ItemMembershipTaskManager } from 'graasp-test';
+import { GraaspPublicPluginOptions } from '../src/types';
+import { DEFAULT_GRAASP_ACTOR, PUBLIC_TAG_ID, PUBLISHED_TAG_ID } from './constants';
 
 type props = {
   taskManager: ItemTaskManager;
@@ -15,6 +15,7 @@ type props = {
   memberTaskManager: MemberTaskManager;
   verifyAuthenticationMock?: () => void;
   options?: Partial<GraaspPublicPluginOptions>;
+  itemMembershipTaskManager?: ItemMembershipTaskManager;
 };
 
 const build = async ({
@@ -23,11 +24,20 @@ const build = async ({
   itemDbService,
   memberDbService,
   itemMemberhipDbService,
+  itemMembershipTaskManager,
   memberTaskManager,
   verifyAuthenticationMock,
   options,
 }: props) => {
-  const app = fastify();
+  const app = fastify({
+    ajv: {
+      customOptions: {
+        // This allow routes that take array to correctly interpret single values as an array
+        // https://github.com/fastify/fastify/blob/main/docs/Validation-and-Serialization.md
+        coerceTypes: 'array',
+      },
+    },
+  });
   app.decorate('verifyAuthentication', verifyAuthenticationMock ?? jest.fn());
   app.addSchema(schemas);
 
@@ -38,28 +48,22 @@ const build = async ({
   });
   app.decorate('itemMemberships', {
     dbService: itemMemberhipDbService,
+    taskManager: itemMembershipTaskManager,
   });
   app.decorate('members', {
     dbService: memberDbService,
     taskManager: memberTaskManager,
   });
-  app.decorate('fileItemPluginOptions', {
-    storageRootPath: '/',
+  app.decorate('public', {
+    publicTagId: PUBLIC_TAG_ID,
+    publishedTagId: PUBLISHED_TAG_ID,
+    graaspActor: DEFAULT_GRAASP_ACTOR,
   });
 
   await app.register(plugin, {
-    tagId: 'sometagid',
-    graaspActor: DEFAULT_GRAASP_ACTOR,
     ...options,
-    serviceMethod: ServiceMethod.LOCAL,
-    prefixes: {
-      avatarsPrefix: 'avatarsPrefix',
-      filesPrefix: 'filesPrefix',
-      thumbnailsPrefix: 'thumbnailsPrefix'
-    },
 
     prefix: '/p',
-    publishedTagId: 'published-tag-id',
   });
 
   return app;
