@@ -61,6 +61,7 @@ export class TaskManager {
       this.publicItemService,
       this.itemTagService,
       this.itemService,
+      this.publicTagId,
       input,
     );
   }
@@ -74,6 +75,7 @@ export class TaskManager {
       this.publicItemService,
       this.itemTagService,
       this.itemService,
+      this.publicTagId,
       input,
     );
   }

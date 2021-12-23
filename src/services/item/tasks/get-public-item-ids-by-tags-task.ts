@@ -26,11 +26,8 @@ export class GetPublicItemIdsWithTagsTask extends BasePublicItemTask<readonly st
     publicTagId: string,
     input: GetPublicItemIdsWithTagsTaskInputType,
   ) {
-    super(actor, publicItemService, itemTagService, itemService);
-    this.itemService = itemService;
-    this.publicItemService = publicItemService;
+    super(actor, publicItemService, itemTagService, itemService, publicTagId);
     this.input = input;
-    this.publicTagId = publicTagId;
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
@@ -38,8 +35,6 @@ export class GetPublicItemIdsWithTagsTask extends BasePublicItemTask<readonly st
 
     const { tagIds } = this.input;
 
-    // get item
-    // TODO:: use hasTags --> public and published tags and more tags
     const itemPaths = await this.itemTagService.getItemPathsByTags(
       [this.publicTagId, ...tagIds],
       handler,

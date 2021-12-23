@@ -802,9 +802,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/graasp@github:graasp/graasp-types#11/getManyTask":
+"@types/graasp@github:graasp/graasp-types":
   version: 0.1.0
-  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=2b4d8da65af52290738ca4e879bad736c420f31d"
+  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=5ff084a228a282f1301ae9cfe3d2d99e1b777f06"
   checksum: 53db11d6e2f1ab95454372a3ffe44440c458a047e0965d0d495a0bde8ba4deb5b5499a69574902633629cc1d47a20ea6e5dea4c95e238e601a452225934032f5
   languageName: node
   linkType: hard
@@ -2584,10 +2584,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graasp-item-tags@github:graasp/graasp-item-tags#11/taskManagerDbService":
+"graasp-item-tags@github:graasp/graasp-item-tags":
   version: 0.1.0
-  resolution: "graasp-item-tags@https://github.com/graasp/graasp-item-tags.git#commit=d93b88ef273826f548248bb33c47b7d29ab45c8a"
-  checksum: bcbebd4c6520d7fd03e45e3684e1f55f5e736b467e7ab806888a02b4f03d9cc52a230b73dbfa912ecaf822be04bfb5098127f8d99d7f3462caea0fdb2d9200a9
+  resolution: "graasp-item-tags@https://github.com/graasp/graasp-item-tags.git#commit=ec4062db494dd76f114b61b193736b6e4021b6eb"
+  dependencies:
+    http-status-codes: 2.1.4
+  checksum: 12fe6523822e3e82b389cbee752f0d7d3eb42a1d45a8dcc156471a9c71b9f0c9cfed4d6c05516cfb6fdd16e039161e3656df9b71234bcd94e6af7b76354820d7
   languageName: node
   linkType: hard
 
@@ -2596,7 +2598,7 @@ __metadata:
   resolution: "graasp-plugin-public@workspace:."
   dependencies:
     "@types/eslint": ^7.2.5
-    "@types/graasp": "github:graasp/graasp-types#11/getManyTask"
+    "@types/graasp": "github:graasp/graasp-types"
     "@types/jest": ^27.0.2
     "@types/node": ^14.14.7
     "@typescript-eslint/eslint-plugin": ^4.7.0
@@ -2605,8 +2607,8 @@ __metadata:
     fastify: ^3.8.0
     fastify-cors: ^6.0.2
     form-data: 4.0.0
-    graasp-item-tags: "github:graasp/graasp-item-tags#11/taskManagerDbService"
-    graasp-test: "github:graasp/graasp-test#9/getManyTask"
+    graasp-item-tags: "github:graasp/graasp-item-tags"
+    graasp-test: "github:graasp/graasp-test"
     http-status-codes: ^2.1.4
     jest: ^27.2.5
     prettier: ^2.4.1
@@ -2618,10 +2620,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graasp-test@github:graasp/graasp-test#9/getManyTask":
+"graasp-test@github:graasp/graasp-test":
   version: 0.1.0
-  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=1e3fab02ecf853a62e29b1eb1710841fa9ade59c"
-  checksum: d9f0befcd7068a65dd1df41caed4a0b6cbca0d69e2598e907500dce2be57ccd5599ceca49ae8d609bad7a95119cd446e648f7dd88a1a3e0d9b04ba9eaaf15575
+  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=9312f4261c3c2fa12d6e080d927debadc3d1be0a"
+  checksum: 53e859e5f8daa36040ceaa17e7dc75a4d9ec02a0573066dfdbdf9894014ff679b0fb3c0593a465cb806d86ba34a6d884ba4fa9f89c943a5b3bcf7f85507189ea
   languageName: node
   linkType: hard
 
@@ -2703,7 +2705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-status-codes@npm:^2.1.4":
+"http-status-codes@npm:2.1.4, http-status-codes@npm:^2.1.4":
   version: 2.1.4
   resolution: "http-status-codes@npm:2.1.4"
   checksum: 44fedd7b2cfe8672e647fd03a1baf6662a62e7bf1669a866404830e98853dc0239b5cd054938e562cdd7b8228a9a7bc0e27b0eacc6a07814b1639a9c518a7220

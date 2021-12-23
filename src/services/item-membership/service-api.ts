@@ -15,15 +15,14 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify) =>
 
   const itemTagService = new ItemTagService();
   const pIS = new PublicItemService(publicTagId);
-  const pITM = new PublicItemMembershipTaskManager(pIS, iS, itemTagService, iMTM);
+  const pITM = new PublicItemMembershipTaskManager(pIS, iS, itemTagService, iMTM, publicTagId);
 
   fastify.get<{ Querystring: { itemId: string[] } }>(
     '/',
     { schema: getMany },
     async ({ query: { itemId: itemIds }, log }) => {
       const tasks = pITM.createGetManyPublicItemMembershipsTaskSequence(graaspActor, itemIds);
-      const ddd = await runner.runSingleSequence(tasks, log);
-      return ddd
+      return runner.runSingleSequence(tasks, log);
     },
   );
 };

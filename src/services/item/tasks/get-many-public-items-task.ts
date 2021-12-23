@@ -22,11 +22,10 @@ export class GetManyPublicItemsTask extends BasePublicItemTask<(Item | ItemNotPu
     publicItemService: PublicItemService,
     itemTagService: ItemTagService,
     itemService: ItemService,
+    publicTagId: string,
     input: GetManyPublicItemsTaskInputType,
   ) {
-    super(actor, publicItemService, itemTagService, itemService);
-    this.itemService = itemService;
-    this.publicItemService = publicItemService;
+    super(actor, publicItemService, itemTagService, itemService, publicTagId);
     this.input = input;
   }
 

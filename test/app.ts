@@ -15,7 +15,7 @@ type props = {
   memberTaskManager: MemberTaskManager;
   verifyAuthenticationMock?: () => void;
   options?: Partial<GraaspPublicPluginOptions>;
-  itemMembershipTaskManager?: ItemMembershipTaskManager
+  itemMembershipTaskManager?: ItemMembershipTaskManager;
 };
 
 const build = async ({
@@ -48,7 +48,7 @@ const build = async ({
   });
   app.decorate('itemMemberships', {
     dbService: itemMemberhipDbService,
-    taskManager: itemMembershipTaskManager
+    taskManager: itemMembershipTaskManager,
   });
   app.decorate('members', {
     dbService: memberDbService,

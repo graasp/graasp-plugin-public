@@ -9,6 +9,8 @@ import { PublicItemService } from '../db-service';
 export abstract class BasePublicItemTask<R> implements Task<Actor, R> {
   protected publicItemService: PublicItemService;
   protected itemService: ItemService;
+  protected publicTagId: string;
+
   protected _result: R;
   protected _message: string;
 
@@ -30,11 +32,13 @@ export abstract class BasePublicItemTask<R> implements Task<Actor, R> {
     publicItemService: PublicItemService,
     itemTagService: ItemTagService,
     itemService: ItemService,
+    publicTagId: string,
   ) {
     this.actor = actor;
     this.publicItemService = publicItemService;
     this.itemTagService = itemTagService;
     this.itemService = itemService;
+    this.publicTagId = publicTagId;
     this.status = 'NEW';
   }
 

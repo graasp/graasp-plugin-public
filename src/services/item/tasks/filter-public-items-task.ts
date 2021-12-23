@@ -27,9 +27,8 @@ export class FilterPublicItemsTask extends BasePublicItemTask<readonly Item[]> {
     publicTagId: string,
     input: FilterPublicItemsTaskInputType,
   ) {
-    super(member, publicItemService, itemTagService, itemService);
+    super(member, publicItemService, itemTagService, itemService, publicTagId);
     this.input = input;
-    this.publicTagId = publicTagId;
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {

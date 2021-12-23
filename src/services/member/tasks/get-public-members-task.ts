@@ -4,24 +4,20 @@ import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp
 import { BasePublicMemberTask } from './base-public-member-task';
 
 type GetPublicMembersTaskInputType = {
-  memberIds?: string[]
-}
+  memberIds?: string[];
+};
 
 export class GetPublicMembersTask extends BasePublicMemberTask<Member[]> {
-  input?: GetPublicMembersTaskInputType
-  getInput?: () => GetPublicMembersTaskInputType
+  input?: GetPublicMembersTaskInputType;
+  getInput?: () => GetPublicMembersTaskInputType;
 
   get name(): string {
     return GetPublicMembersTask.name;
   }
 
-  private memberIds: string[];
-  private memberService: MemberService;
-
   constructor(actor: Actor, memberService: MemberService, input: GetPublicMembersTaskInputType) {
-    super(actor);
+    super(actor, memberService);
     this.input = input;
-    this.memberService = memberService;
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
