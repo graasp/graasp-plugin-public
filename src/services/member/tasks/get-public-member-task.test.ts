@@ -1,4 +1,4 @@
-import { Actor, DatabaseTransactionHandler, Member, MemberService, UnknownExtra } from 'graasp';
+import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp';
 import { PublicItemService } from '../../..';
 import { buildMember, PUBLIC_TAG_ID } from '../../../../test/constants';
 import { GetPublicMembersTask } from './get-public-members-task';

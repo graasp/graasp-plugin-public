@@ -18,9 +18,16 @@ describe('GetPublicItemTask', () => {
     const item = PUBLIC_ITEM_FOLDER;
     jest.spyOn(itemService, 'get').mockResolvedValue(item);
     jest.spyOn(publicItemService, 'isPublic').mockResolvedValue(true);
-    const task = new GetPublicItemTask(actor, publicItemService, itemTagService, itemService, PUBLIC_TAG_ID, {
-      itemId: item.id,
-    });
+    const task = new GetPublicItemTask(
+      actor,
+      publicItemService,
+      itemTagService,
+      itemService,
+      PUBLIC_TAG_ID,
+      {
+        itemId: item.id,
+      },
+    );
 
     await task.run(handler);
     expect(task.result).toEqual(item);
@@ -28,9 +35,16 @@ describe('GetPublicItemTask', () => {
   it('Throw if item does not exist', async () => {
     const itemId = 'invalid-id';
     jest.spyOn(itemService, 'get').mockResolvedValue(undefined);
-    const task = new GetPublicItemTask(actor, publicItemService, itemTagService, itemService, PUBLIC_TAG_ID, {
-      itemId,
-    });
+    const task = new GetPublicItemTask(
+      actor,
+      publicItemService,
+      itemTagService,
+      itemService,
+      PUBLIC_TAG_ID,
+      {
+        itemId,
+      },
+    );
 
     await task.run(handler).catch((e) => {
       expect(e).toEqual(new ItemNotFound(itemId));
@@ -41,9 +55,16 @@ describe('GetPublicItemTask', () => {
     jest.spyOn(itemService, 'get').mockResolvedValue(item);
     jest.spyOn(publicItemService, 'isPublic').mockResolvedValue(false);
 
-    const task = new GetPublicItemTask(actor, publicItemService, itemTagService, itemService, PUBLIC_TAG_ID, {
-      itemId: item.id,
-    });
+    const task = new GetPublicItemTask(
+      actor,
+      publicItemService,
+      itemTagService,
+      itemService,
+      PUBLIC_TAG_ID,
+      {
+        itemId: item.id,
+      },
+    );
 
     await task.run(handler).catch((e) => {
       expect(e).toEqual(new ItemNotPublic(item.id));

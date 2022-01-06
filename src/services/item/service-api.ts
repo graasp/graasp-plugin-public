@@ -39,6 +39,22 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify) =>
     },
   );
 
+  // get public items by tag id
+  fastify.get<{ Querystring: { tagId: string[] } }>(
+    '/',
+    { schema: getItemsBy },
+    async ({ query: { tagId: tagIds }, log }) => {
+      const t1 = pITM.createGetPublicItemIdsByTagsTask(graaspActor, { tagIds });
+      // use item manager task to get trigger post hooks (deleted items are removed)
+      const t2 = iTM.createGetManyTask(graaspActor);
+      t2.getInput = () => ({
+        itemIds: t1.result,
+      });
+      // remove unavailable items
+      return runner.runSingleSequence([t1, t2], log);
+    },
+  );
+
   // endpoints requiring authentication
   fastify.register(async function (instance) {
     // check member is set in request, necessary to allow access to parent
@@ -59,22 +75,6 @@ const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify) =>
       },
     );
   });
-
-  // get public items by tag id
-  fastify.get<{ Querystring: { tagId: string[] } }>(
-    '/',
-    { schema: getItemsBy },
-    async ({ query: { tagId: tagIds }, log }) => {
-      const t1 = pITM.createGetPublicItemIdsByTagsTask(graaspActor, { tagIds });
-      // use item manager task to get trigger post hooks (deleted items are removed)
-      const t2 = iTM.createGetManyTask(graaspActor);
-      t2.getInput = () => ({
-        itemIds: t1.result,
-      });
-      // remove unavailable items
-      return runner.runSingleSequence([t1, t2], log);
-    },
-  );
 };
 
 export default plugin;

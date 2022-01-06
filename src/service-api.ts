@@ -8,7 +8,6 @@ import publicItemMembershipPlugin from './services/item-membership/service-api';
 import { GraaspPublicPluginOptions } from './types';
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify, options) => {
-
   fastify.addSchema(common);
 
   fastify.register(publicItemPlugin, { ...options, prefix: '/items' });
