@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import { GetPublicItemIdsWithTagsTask } from '../src/services/item/tasks/get-public-item-ids-by-tags-task';
 
 import build from './app';
-import { PUBLIC_ITEM_CHILDREN, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
+import { PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 
 const taskManager = new ItemTaskManager();
 const runner = new TaskRunner();

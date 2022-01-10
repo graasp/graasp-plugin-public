@@ -15,13 +15,13 @@ export class TaskManager {
     itemService: ItemService,
     itemTagService: ItemTagService,
     itemMembershipTaskManager: ItemMembershipTaskManager,
-    publicTagId: string
+    publicTagId: string,
   ) {
     this.itemService = itemService;
     this.itemTagService = itemTagService;
     this.publicItemService = publicItemService;
     this.itemMembershipTaskManager = itemMembershipTaskManager;
-    this.publicTagId = publicTagId
+    this.publicTagId = publicTagId;
   }
 
   createGetManyPublicItemMembershipsTaskSequence(
