@@ -19,9 +19,7 @@ export const getMany = {
         anyOf: [
           {
             type: 'array',
-            items: {
-              $ref: 'http://graasp.org/public-items/#/definitions/itemMembership',
-            },
+            // todo: a bug prevent to define the array type
           },
           { $ref: 'http://graasp.org/#/definitions/error' },
         ],
