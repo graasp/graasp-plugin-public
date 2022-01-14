@@ -18,8 +18,10 @@ export const getMany = {
       items: {
         anyOf: [
           {
-            $ref: 'http://graasp.org/public-items/#/definitions/item',
-            // todo/bug: define schema content of array
+            type: 'array',
+            items: {
+              $ref: 'http://graasp.org/public-items/#/definitions/itemMembership',
+            },
           },
           { $ref: 'http://graasp.org/#/definitions/error' },
         ],

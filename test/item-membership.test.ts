@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { v4 } from 'uuid';
 
 import build from './app';
-import { PUBLIC_ITEM_FOLDER } from './constants';
+import { buildItemMembership } from './constants';
 
 const taskManager = new ItemTaskManager();
 const runner = new TaskRunner();
@@ -35,14 +35,14 @@ describe('Item Memberships', () => {
       memberTaskManager,
       itemMembershipTaskManager,
     });
-    const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
-    jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => items);
+    const memberships = [[buildItemMembership()], [buildItemMembership()]];
+    jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => memberships);
     jest.spyOn(itemMembershipTaskManager, 'createGetOfManyItemsTask').mockReturnValue(new Task());
     const res = await app.inject({
       method: 'GET',
       url: `/p/item-memberships?itemId=${v4()}&itemId=${v4()}`,
     });
     expect(res.statusCode).toBe(StatusCodes.OK);
-    expect(res.json()).toEqual(items);
+    expect(res.json()).toEqual(memberships);
   });
 });
