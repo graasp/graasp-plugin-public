@@ -1,8 +1,9 @@
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
+import MockTask from 'graasp-test/src/tasks/task';
 import { StatusCodes } from 'http-status-codes';
 import { v4 } from 'uuid';
-import { GetPublicItemIdsWithTagsTask } from '../src/services/item/tasks/get-public-item-ids-by-tags-task';
+import { ItemNotFound } from '../src';
 
 import build from './app';
 import { PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
@@ -151,7 +152,7 @@ describe('Items', () => {
       expect(res.json()).toEqual(items);
     });
 
-    it('Remove invalid items', async () => {
+    it('Return items and errors', async () => {
       const app = await build({
         taskManager,
         runner,
@@ -160,23 +161,16 @@ describe('Items', () => {
         itemMemberhipDbService,
         memberTaskManager,
       });
-      const items = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER];
-      jest.spyOn(runner, 'runSingle').mockImplementation(async (task) => {
-        if (task instanceof GetPublicItemIdsWithTagsTask) {
-          return [...items.map(({ id }) => id), { name: 'some error' }];
-        } else {
-          return items;
-        }
-      });
-      jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
-      jest.spyOn(runner, 'runMultiple').mockImplementation(async () => items);
+      const itemsWithError = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER, new ItemNotFound()];
+      jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => itemsWithError);
+      jest.spyOn(taskManager, 'createGetManyTask').mockReturnValue(new MockTask());
 
       const res = await app.inject({
         method: 'GET',
         url: `/p/items?tagId=${PUBLIC_TAG_ID}`,
       });
       expect(res.statusCode).toBe(StatusCodes.OK);
-      expect(res.json()).toEqual(items);
+      expect(res.json()).toEqual(itemsWithError);
     });
   });
 });
