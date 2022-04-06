@@ -24,7 +24,7 @@ const getChildren = {
   },
 };
 
-// schema for getting one item's children
+// schema for getting items by tags
 const getItemsBy = {
   querystring: {
     type: 'object',
@@ -39,7 +39,12 @@ const getItemsBy = {
   response: {
     200: {
       type: 'array',
-      items: { $ref: 'http://graasp.org/public-items/#/definitions/item' },
+      items: {
+        anyOf: [
+          { $ref: 'http://graasp.org/public-items/#/definitions/error' },
+          { $ref: 'http://graasp.org/public-items/#/definitions/item' },
+        ],
+      },
     },
   },
 };
