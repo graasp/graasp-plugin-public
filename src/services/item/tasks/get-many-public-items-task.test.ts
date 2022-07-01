@@ -1,9 +1,10 @@
 import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
-import { buildMember, PUBLIC_ITEM_CHILDREN, PUBLIC_TAG_ID } from '../../../../test/constants';
+
+import { ItemNotPublic } from '../../..';
+import { PUBLIC_ITEM_CHILDREN, PUBLIC_TAG_ID, buildMember } from '../../../../test/constants';
 import { PublicItemService } from '../db-service';
 import { GetManyPublicItemsTask } from './get-many-public-items-task';
-import { ItemNotPublic } from '../../..';
 
 const actor = buildMember() as Actor;
 const publicItemService = new PublicItemService(PUBLIC_TAG_ID);

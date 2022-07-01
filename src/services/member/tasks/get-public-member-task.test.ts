@@ -1,6 +1,7 @@
 import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp';
+
 import { PublicItemService } from '../../..';
-import { buildMember, PUBLIC_TAG_ID } from '../../../../test/constants';
+import { PUBLIC_TAG_ID, buildMember } from '../../../../test/constants';
 import { GetPublicMembersTask } from './get-public-members-task';
 
 const actor = buildMember() as Actor;

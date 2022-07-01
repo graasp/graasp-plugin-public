@@ -1,6 +1,5 @@
-// global
 import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp';
-// local
+
 import { BasePublicMemberTask } from './base-public-member-task';
 
 type GetPublicMembersTaskInputType = {

@@ -1,5 +1,5 @@
-// global
-import { sql, DatabaseTransactionConnection as TrxHandler } from 'slonik';
+import { DatabaseTransactionConnection as TrxHandler, sql } from 'slonik';
+
 import { Item } from 'graasp';
 
 export class PublicItemService {

@@ -1,6 +1,7 @@
 import { DatabaseTransactionHandler, Item, ItemService } from 'graasp';
 import { Actor } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
+
 import { PublicItemService } from '../db-service';
 import { BasePublicItemTask } from './base-public-item-task';
 

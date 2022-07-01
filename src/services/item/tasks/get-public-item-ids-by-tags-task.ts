@@ -1,8 +1,6 @@
-// global
 import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
 
-// local
 import { PublicItemService } from '../db-service';
 import { BasePublicItemTask } from './base-public-item-task';
 

@@ -1,6 +1,7 @@
 import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
-import { buildMember, PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from '../../../../test/constants';
+
+import { PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID, buildMember } from '../../../../test/constants';
 import { ItemNotFound, ItemNotPublic } from '../../../util/errors';
 import { PublicItemService } from '../db-service';
 import { GetPublicItemTask } from './get-public-item-task';

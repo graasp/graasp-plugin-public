@@ -1,7 +1,9 @@
-import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 import { v4 } from 'uuid';
+
+import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
-import { buildMember, PUBLIC_ITEM_CHILDREN, PUBLIC_TAG_ID } from '../../../../test/constants';
+
+import { PUBLIC_ITEM_CHILDREN, PUBLIC_TAG_ID, buildMember } from '../../../../test/constants';
 import { PublicItemService } from '../db-service';
 import { GetPublicItemIdsWithTagsTask } from './get-public-item-ids-by-tags-task';
 

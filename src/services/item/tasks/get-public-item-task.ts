@@ -1,9 +1,8 @@
-// global
 import { Actor, DatabaseTransactionHandler, Item, ItemService, UnknownExtra } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
-// local
-import { PublicItemService } from '../db-service';
+
 import { ItemNotFound, ItemNotPublic } from '../../../util/errors';
+import { PublicItemService } from '../db-service';
 import { BasePublicItemTask } from './base-public-item-task';
 
 export type GetPublicItemTaskInputType = {

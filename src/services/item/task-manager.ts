@@ -1,20 +1,21 @@
-import { Item, ItemService, Actor } from 'graasp';
+import { Actor, Item, ItemService } from 'graasp';
+import { ItemTagService } from 'graasp-item-tags';
+
+import { PublicItemService } from './db-service';
+import { BasePublicItemTask } from './tasks/base-public-item-task';
 import {
   FilterPublicItemsTask,
   FilterPublicItemsTaskInputType,
 } from './tasks/filter-public-items-task';
-import { ItemTagService } from 'graasp-item-tags';
-import { PublicItemService } from './db-service';
-import { GetPublicItemTask, GetPublicItemTaskInputType } from './tasks/get-public-item-task';
-import { BasePublicItemTask } from './tasks/base-public-item-task';
-import {
-  GetPublicItemIdsWithTagsTask,
-  GetPublicItemIdsWithTagsTaskInputType,
-} from './tasks/get-public-item-ids-by-tags-task';
 import {
   GetManyPublicItemsTask,
   GetManyPublicItemsTaskInputType,
 } from './tasks/get-many-public-items-task';
+import {
+  GetPublicItemIdsWithTagsTask,
+  GetPublicItemIdsWithTagsTaskInputType,
+} from './tasks/get-public-item-ids-by-tags-task';
+import { GetPublicItemTask, GetPublicItemTaskInputType } from './tasks/get-public-item-task';
 
 export class TaskManager {
   private itemService: ItemService;
