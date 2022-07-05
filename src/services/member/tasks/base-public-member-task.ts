@@ -1,6 +1,6 @@
-// global
 import { FastifyLoggerInstance } from 'fastify';
-import { Task, TaskStatus, Actor, DatabaseTransactionHandler, MemberService } from 'graasp';
+
+import { Actor, DatabaseTransactionHandler, MemberService, Task, TaskStatus } from 'graasp';
 
 export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
   protected _result: R;

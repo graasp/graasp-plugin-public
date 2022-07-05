@@ -1,5 +1,6 @@
-import { ItemTagService } from 'graasp-item-tags';
 import { Actor, ItemMembershipTaskManager, ItemService, Task } from 'graasp';
+import { ItemTagService } from 'graasp-item-tags';
+
 import { PublicItemService } from '../..';
 import { GetManyPublicItemsTask } from '../item/tasks/get-many-public-items-task';
 

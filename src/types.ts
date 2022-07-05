@@ -1,4 +1,5 @@
 import { Actor } from 'graasp';
+
 import { PublicItemService } from '.';
 import { TaskManager } from './services/item/task-manager';
 

@@ -1,12 +1,12 @@
 import { FastifyPluginAsync } from 'fastify';
-import { IdParam } from 'graasp';
 
-// local
-import { PublicItemService } from './db-service';
-import { getOne, getChildren, getItemsBy, copyOne } from './schemas';
+import { IdParam } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
-import { GraaspPublicPluginOptions } from '../../types';
+
 import { PublicItemTaskManager } from '../..';
+import { GraaspPublicPluginOptions } from '../../types';
+import { PublicItemService } from './db-service';
+import { copyOne, getChildren, getItemsBy, getOne } from './schemas';
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify) => {
   const {

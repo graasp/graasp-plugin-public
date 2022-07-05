@@ -1,7 +1,8 @@
 import { FastifyPluginAsync } from 'fastify';
-import { IdParam } from 'graasp';
-import { GraaspPublicPluginOptions } from '../../types';
 
+import { IdParam } from 'graasp';
+
+import { GraaspPublicPluginOptions } from '../../types';
 import { getMember, getMembers } from './schemas';
 import { GetPublicMembersTask } from './tasks/get-public-members-task';
 

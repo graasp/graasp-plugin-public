@@ -1,8 +1,10 @@
 import fastify from 'fastify';
-import plugin from '../src/service-api';
-import schemas from '../src/schemas/common';
+
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
-import { TaskRunner, ItemTaskManager, ItemMembershipTaskManager } from 'graasp-test';
+import { ItemMembershipTaskManager, ItemTaskManager, TaskRunner } from 'graasp-test';
+
+import schemas from '../src/schemas/common';
+import plugin from '../src/service-api';
 import { GraaspPublicPluginOptions } from '../src/types';
 import { DEFAULT_GRAASP_ACTOR, PUBLIC_TAG_ID, PUBLISHED_TAG_ID } from './constants';
 

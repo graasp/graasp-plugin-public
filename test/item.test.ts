@@ -1,10 +1,11 @@
+import { StatusCodes } from 'http-status-codes';
+import { v4 } from 'uuid';
+
 import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
 import MockTask from 'graasp-test/src/tasks/task';
-import { StatusCodes } from 'http-status-codes';
-import { v4 } from 'uuid';
-import { ItemNotFound } from '../src';
 
+import { ItemNotFound } from '../src';
 import build from './app';
 import { PUBLIC_ITEM_FOLDER, PUBLIC_TAG_ID } from './constants';
 

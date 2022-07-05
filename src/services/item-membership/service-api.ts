@@ -1,9 +1,11 @@
 import { FastifyPluginAsync } from 'fastify';
+
 import { ItemTagService } from 'graasp-item-tags';
+
 import { PublicItemService } from '../..';
 import { GraaspPublicPluginOptions } from '../../types';
-import { TaskManager as PublicItemMembershipTaskManager } from './task-manager';
 import { getMany } from './schemas';
+import { TaskManager as PublicItemMembershipTaskManager } from './task-manager';
 
 const plugin: FastifyPluginAsync<GraaspPublicPluginOptions> = async (fastify) => {
   const {

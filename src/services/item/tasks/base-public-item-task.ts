@@ -1,9 +1,9 @@
-// global
 import { FastifyLoggerInstance } from 'fastify';
+
 import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
 import { Task, TaskStatus } from 'graasp';
 import { ItemTagService } from 'graasp-item-tags';
-// local
+
 import { PublicItemService } from '../db-service';
 
 export abstract class BasePublicItemTask<R> implements Task<Actor, R> {

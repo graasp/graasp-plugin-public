@@ -1,5 +1,6 @@
-import { Item, ItemMembership, Member } from 'graasp';
 import { v4 } from 'uuid';
+
+import { Item, ItemMembership, Member } from 'graasp';
 
 export const PUBLIC_ITEM_FOLDER: Item = {
   id: v4(),

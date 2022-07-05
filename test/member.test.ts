@@ -1,7 +1,8 @@
-import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
-import { ItemTaskManager, TaskRunner } from 'graasp-test';
 import { StatusCodes } from 'http-status-codes';
 import qs from 'qs';
+
+import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
+import { ItemTaskManager, TaskRunner } from 'graasp-test';
 
 import build from './app';
 import { buildMember, checkMember } from './constants';
