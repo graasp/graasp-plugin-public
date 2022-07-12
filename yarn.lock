@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 5
+  version: 6
   cacheKey: 8
 
 "@ampproject/remapping@npm:^2.1.0":
@@ -941,6 +941,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/cookie@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@fastify/cookie@npm:7.0.0"
+  dependencies:
+    cookie-signature: ^1.1.0
+    fastify-plugin: ^3.0.1
+  checksum: abc6f2276831824d6bf1719d42f3c9fe90298468543e2cb2b1fe47928b9fac5989d135204c5ae08f200edc74c74c6519d8bf24395ec42d040fd1d417c934b8e9
+  languageName: node
+  linkType: hard
+
 "@fastify/error@npm:^2.0.0":
   version: 2.0.0
   resolution: "@fastify/error@npm:2.0.0"
@@ -948,10 +958,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/secure-session@npm:5.2.0":
+  version: 5.2.0
+  resolution: "@fastify/secure-session@npm:5.2.0"
+  dependencies:
+    "@fastify/cookie": ^7.0.0
+    fastify-plugin: ^3.0.0
+    sodium-native: ^3.0.0
+  bin:
+    secure-session: genkey.js
+  checksum: 3366155760af949e677cf41ad37863e49cac60ab98c519767c6aeafcce7147c2cb2594909ea03513885ff758b082db3f4ccd00ec5906af09a4a4ceabca3f7852
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.2
   resolution: "@gar/promisify@npm:1.1.2"
   checksum: d05081e0887a49c178b75ee3067bd6ee086f73c154d121b854fb2e044e8a89cb1cbb6de3a0dd93a519b80f0531fda68b099dd7256205f7fbb3490324342f2217
+  languageName: node
+  linkType: hard
+
+"@graasp/sdk@github:graasp/graasp-utils#15/testUtils":
+  version: 0.1.0
+  resolution: "@graasp/sdk@https://github.com/graasp/graasp-utils.git#commit=b87229b7a6e27bd3d3d7419039e551f13e1ca251"
+  dependencies:
+    "@fastify/secure-session": 5.2.0
+    fastify: ^3.29.1
+    fluent-json-schema: 3.1.0
+    js-cookie: 3.0.1
+    qs: 6.11.0
+    slonik: 28.1.1
+    uuid: 8.3.2
+  checksum: 3bf99326f530db397f1a8f5b9ec8e63de1afa6dd47ab45d4acff42f038f59136aa69b9cd570f9e2bbe063b0d05be1fdc53dc9e142eb1fdd128ab8c80ddaf3cb6
   languageName: node
   linkType: hard
 
@@ -1465,13 +1503,6 @@ __metadata:
   version: 0.0.50
   resolution: "@types/estree@npm:0.0.50"
   checksum: 9a2b6a4a8c117f34d08fbda5e8f69b1dfb109f7d149b60b00fd7a9fb6ac545c078bc590aa4ec2f0a256d680cf72c88b3b28b60c326ee38a7bc8ee1ee95624922
-  languageName: node
-  linkType: hard
-
-"@types/graasp@github:graasp/graasp-types":
-  version: 0.1.0
-  resolution: "@types/graasp@https://github.com/graasp/graasp-types.git#commit=5ff084a228a282f1301ae9cfe3d2d99e1b777f06"
-  checksum: 53db11d6e2f1ab95454372a3ffe44440c458a047e0965d0d495a0bde8ba4deb5b5499a69574902633629cc1d47a20ea6e5dea4c95e238e601a452225934032f5
   languageName: node
   linkType: hard
 
@@ -2470,6 +2501,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie-signature@npm:^1.1.0":
+  version: 1.2.0
+  resolution: "cookie-signature@npm:1.2.0"
+  checksum: d11f56f909733695d989511bf0e1dd874220d818b9d118945dce3c275fa50adfb3f6984354de0f5eefdc9347951a22ba3545230a762576019d23c16055b12d4c
+  languageName: node
+  linkType: hard
+
 "cookie@npm:^0.4.0":
   version: 0.4.1
   resolution: "cookie@npm:0.4.1"
@@ -3065,6 +3103,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fastify-plugin@npm:^3.0.0, fastify-plugin@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "fastify-plugin@npm:3.0.1"
+  checksum: 131ba0a388f777829c3fb0fd5b75cf057688ce6d0ca354fb1ebf829767a8c853b0825762b9185b5200097454df0ede2f3095da2efe1aa1b3736d07f194e6d374
+  languageName: node
+  linkType: hard
+
 "fastify-warning@npm:^0.2.0":
   version: 0.2.0
   resolution: "fastify-warning@npm:0.2.0"
@@ -3072,9 +3117,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^3.29.0":
-  version: 3.29.0
-  resolution: "fastify@npm:3.29.0"
+"fastify@npm:^3.29.1":
+  version: 3.29.1
+  resolution: "fastify@npm:3.29.1"
   dependencies:
     "@fastify/ajv-compiler": ^1.0.0
     "@fastify/error": ^2.0.0
@@ -3091,7 +3136,7 @@ __metadata:
     secure-json-parse: ^2.0.0
     semver: ^7.3.2
     tiny-lru: ^8.0.1
-  checksum: ed2964035e34843d08c09eee80f5f14bd8cc0ab9b46ac9d146c6821b586a359a93e1354fca4004ac14e37b267afe5bb1ba3ddb555ecf09b74d9b6bf2f9893ba1
+  checksum: 8f9e9c9f837135b82c58f4bf8d0ddfad703275ff48827e37eccdb0f8b0366e043a2111da4ee8d35ae1bc78512b52ac15140790bbe314b51deced535cff9fefe5
   languageName: node
   linkType: hard
 
@@ -3184,6 +3229,15 @@ __metadata:
   version: 3.2.4
   resolution: "flatted@npm:3.2.4"
   checksum: 7d33846428ab337ec81ef9b8b9103894c1c81f5f67feb32bd4ed106fbc47da60d56edb42efd36c9f1f30a010272aeccd34ec1ffacfe9dfdff19673b1d4df481b
+  languageName: node
+  linkType: hard
+
+"fluent-json-schema@npm:3.1.0":
+  version: 3.1.0
+  resolution: "fluent-json-schema@npm:3.1.0"
+  dependencies:
+    deepmerge: ^4.2.2
+  checksum: 52a65194a96a26dd4bff7233206eaa8b37a8dcd774360cde8bd61037b4719e094958aed018fd6dbd5aff064c3d06da200f8c667bec9bb39f4b3ac83efef84120
   languageName: node
   linkType: hard
 
@@ -3430,9 +3484,9 @@ __metadata:
   dependencies:
     "@commitlint/cli": 17.0.3
     "@commitlint/config-conventional": 17.0.3
+    "@graasp/sdk": "github:graasp/graasp-utils#15/testUtils"
     "@trivago/prettier-plugin-sort-imports": 3.2.0
     "@types/eslint": 8.4.3
-    "@types/graasp": "github:graasp/graasp-types"
     "@types/jest": 28.1.4
     "@types/node": 18.0.0
     "@typescript-eslint/eslint-plugin": 5.30.0
@@ -3441,9 +3495,9 @@ __metadata:
     eslint-config-prettier: 8.5.0
     eslint-config-standard: 17.0.0
     eslint-plugin-prettier: 4.2.1
-    fastify: ^3.29.0
+    fastify: ^3.29.1
     graasp-item-tags: "github:graasp/graasp-item-tags"
-    graasp-test: "github:graasp/graasp-test"
+    graasp-test: "github:graasp/graasp-test#23/sdk"
     http-status-codes: 2.2.0
     husky: 8.0.1
     jest: 28.1.2
@@ -3456,10 +3510,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graasp-test@github:graasp/graasp-test":
+"graasp-test@github:graasp/graasp-test#23/sdk":
   version: 0.1.0
-  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=c37d9977ea3d3de72a0c5ac16f8e4084cc2e690c"
-  checksum: 1c9f476969a9b16e07c35c4a44ea4e91fc6a58e37831db746e7744e701502a3e6b917d988121e7442e452bd934100e9714502c46a4a70a2580ac765c9fefd0ca
+  resolution: "graasp-test@https://github.com/graasp/graasp-test.git#commit=d4b11bc106a03fb023241d2ea029b84d5064562f"
+  checksum: 744ed18562e7cabe70e41ee11f03e56d65befd6ad447478533dbc5abee253b0dce2bfa0c5de46a90fbb9a9c6e93ae859b7a27825543e389b4b058c35c6cbb9bd
   languageName: node
   linkType: hard
 
@@ -4350,6 +4404,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-cookie@npm:3.0.1":
+  version: 3.0.1
+  resolution: "js-cookie@npm:3.0.1"
+  checksum: bb48de67e2a6bd1ae3dfd6b2d5a167c33dd0c5a37e909206161eb0358c98f17cb55acd55827a58e9eea3630d89444e7479f7938ef4420dda443218b8c434a4c3
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -4829,6 +4890,17 @@ __metadata:
   version: 0.6.2
   resolution: "negotiator@npm:0.6.2"
   checksum: dfddaff6c06792f1c4c3809e29a427b8daef8cd437c83b08dd51d7ee11bbd1c29d9512d66b801144d6c98e910ffd8723f2432e0cbf8b18d41d2a09599c975ab3
+  languageName: node
+  linkType: hard
+
+"node-gyp-build@npm:^4.3.0":
+  version: 4.5.0
+  resolution: "node-gyp-build@npm:4.5.0"
+  bin:
+    node-gyp-build: bin.js
+    node-gyp-build-optional: optional.js
+    node-gyp-build-test: build-test.js
+  checksum: d888bae0fb88335f69af1b57a2294a931c5042f36e413d8d364c992c9ebfa0b96ffe773179a5a2c8f04b73856e8634e09cce108dbb9804396d3cc8c5455ff2db
   languageName: node
   linkType: hard
 
@@ -5826,7 +5898,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slonik@npm:^28.1.1":
+"slonik@npm:28.1.1, slonik@npm:^28.1.1":
   version: 28.1.1
   resolution: "slonik@npm:28.1.1"
   dependencies:
@@ -5877,6 +5949,16 @@ __metadata:
     ip: ^1.1.5
     smart-buffer: ^4.1.0
   checksum: 2ca9d616e424f645838ebaabb04f85d94ea999e0f8393dc07f86c435af22ed88cb83958feeabd1bb7bc537c635ed47454255635502c6808a6df61af1f41af750
+  languageName: node
+  linkType: hard
+
+"sodium-native@npm:^3.0.0":
+  version: 3.3.0
+  resolution: "sodium-native@npm:3.3.0"
+  dependencies:
+    node-gyp: latest
+    node-gyp-build: ^4.3.0
+  checksum: 4412bc90155261e2006c979788d3b33e3bdba1c41669c7054a876b8731a68886e1450b356791abd2c4e7b217d21f50adfdc1e194d8909dd003223195bd8ddc0a
   languageName: node
   linkType: hard
 
@@ -6402,11 +6484,11 @@ __metadata:
 
 "typescript@patch:typescript@4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
   version: 4.7.4
-  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=ddd1e8"
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 96d3030cb01143570567cb4f3a616b10df65f658f0e74e853e77a089a6a954e35c800be7db8b9bfe9a1ae05d9c2897e281359f65e4caa1caf266368e1c4febd3
+  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
   languageName: node
   linkType: hard
 

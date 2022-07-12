@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 
-import { Item, ItemMembership, Member } from 'graasp';
+import { Item, ItemMembership, Member } from '@graasp/sdk';
 
 export const PUBLIC_ITEM_FOLDER: Item = {
   id: v4(),

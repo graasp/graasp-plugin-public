@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 
-import { IdParam } from 'graasp';
+import { IdParam } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { PublicItemTaskManager } from '../..';

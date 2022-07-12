@@ -1,5 +1,5 @@
-import { DatabaseTransactionHandler, Item, ItemService } from 'graasp';
-import { Actor } from 'graasp';
+import { DatabaseTransactionHandler, Item, ItemService, TaskStatus } from '@graasp/sdk';
+import { Actor } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { PublicItemService } from '../db-service';
@@ -33,7 +33,7 @@ export class FilterPublicItemsTask extends BasePublicItemTask<readonly Item[]> {
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = 'RUNNING';
+    this.status = TaskStatus.RUNNING;
 
     const { items, tagIds = [] } = this.input;
 
@@ -49,6 +49,6 @@ export class FilterPublicItemsTask extends BasePublicItemTask<readonly Item[]> {
     );
 
     this._result = itemsForTags.filter(Boolean);
-    this.status = 'OK';
+    this.status = TaskStatus.OK;
   }
 }

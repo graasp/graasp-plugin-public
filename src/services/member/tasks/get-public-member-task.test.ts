@@ -1,4 +1,4 @@
-import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp';
+import { Actor, DatabaseTransactionHandler, Member, MemberService } from '@graasp/sdk';
 
 import { PublicItemService } from '../../..';
 import { PUBLIC_TAG_ID, buildMember } from '../../../../test/constants';

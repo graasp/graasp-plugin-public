@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { v4 } from 'uuid';
 
-import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
+import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from '@graasp/sdk';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
 import MockTask from 'graasp-test/src/tasks/task';
 

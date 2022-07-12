@@ -1,4 +1,4 @@
-import { Actor, ItemMembershipTaskManager, ItemService, Task } from 'graasp';
+import { Actor, ItemMembershipTaskManager, ItemService, Task } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { PublicItemService } from '../..';

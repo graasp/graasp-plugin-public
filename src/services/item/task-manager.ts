@@ -1,4 +1,4 @@
-import { Actor, Item, ItemService } from 'graasp';
+import { Actor, Item, ItemService, PublicItemTaskManager } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { PublicItemService } from './db-service';
@@ -17,7 +17,7 @@ import {
 } from './tasks/get-public-item-ids-by-tags-task';
 import { GetPublicItemTask, GetPublicItemTaskInputType } from './tasks/get-public-item-task';
 
-export class TaskManager {
+export class TaskManager implements PublicItemTaskManager {
   private itemService: ItemService;
   private itemTagService: ItemTagService;
   private publicTagId: string;
@@ -37,6 +37,15 @@ export class TaskManager {
 
   createFilterPublicItemsTaskName(): string {
     return FilterPublicItemsTask.name;
+  }
+  createGetPublicItemTaskName(): string {
+    return GetPublicItemTask.name;
+  }
+  createGetManyPublicItemsTaskName(): string {
+    return GetManyPublicItemsTask.name;
+  }
+  createGetPublicItemIdsByTagsTaskName(): string {
+    return GetPublicItemIdsWithTagsTask.name;
   }
 
   createFilterPublicItemsTask(
