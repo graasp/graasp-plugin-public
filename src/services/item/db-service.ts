@@ -1,8 +1,8 @@
 import { DatabaseTransactionConnection as TrxHandler, sql } from 'slonik';
 
-import { Item } from 'graasp';
+import { PublicItemService as DbService, Item } from '@graasp/sdk';
 
-export class PublicItemService {
+export class PublicItemService implements DbService {
   private tagId: string;
 
   constructor(publicItemTagId: string) {

@@ -1,9 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import { v4 } from 'uuid';
 
-import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
+import {
+  Item,
+  ItemMembershipService,
+  ItemService,
+  MemberService,
+  MemberTaskManager,
+} from '@graasp/sdk';
 import { ItemTaskManager, Task, TaskRunner } from 'graasp-test';
-import MockTask from 'graasp-test/src/tasks/task';
 
 import { ItemNotFound } from '../src';
 import build from './app';
@@ -65,7 +70,7 @@ describe('Items', () => {
 
       const children = [item, item];
       jest.spyOn(taskManager, 'createGetTask').mockImplementation(jest.fn());
-      jest.spyOn(taskManager, 'createGetChildrenTask').mockImplementation(() => new Task());
+      jest.spyOn(taskManager, 'createGetChildrenTask').mockImplementation(() => new Task<Item[]>());
       jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => children);
 
       const res = await app.inject({
@@ -164,7 +169,7 @@ describe('Items', () => {
       });
       const itemsWithError = [PUBLIC_ITEM_FOLDER, PUBLIC_ITEM_FOLDER, new ItemNotFound()];
       jest.spyOn(runner, 'runSingleSequence').mockImplementation(async () => itemsWithError);
-      jest.spyOn(taskManager, 'createGetManyTask').mockReturnValue(new MockTask());
+      jest.spyOn(taskManager, 'createGetManyTask').mockReturnValue(new Task());
 
       const res = await app.inject({
         method: 'GET',

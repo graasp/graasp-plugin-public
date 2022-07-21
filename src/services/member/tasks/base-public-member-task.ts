@@ -1,6 +1,6 @@
 import { FastifyLoggerInstance } from 'fastify';
 
-import { Actor, DatabaseTransactionHandler, MemberService, Task, TaskStatus } from 'graasp';
+import { Actor, DatabaseTransactionHandler, MemberService, Task, TaskStatus } from '@graasp/sdk';
 
 export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
   protected _result: R;
@@ -15,7 +15,7 @@ export abstract class BasePublicMemberTask<R> implements Task<Actor, R> {
 
   constructor(actor: Actor, memberService: MemberService) {
     this.actor = actor;
-    this.status = 'NEW';
+    this.status = TaskStatus.NEW;
     this.memberService = memberService;
   }
 

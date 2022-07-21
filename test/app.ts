@@ -1,6 +1,6 @@
 import fastify from 'fastify';
 
-import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from 'graasp';
+import { ItemMembershipService, ItemService, MemberService, MemberTaskManager } from '@graasp/sdk';
 import { ItemMembershipTaskManager, ItemTaskManager, TaskRunner } from 'graasp-test';
 
 import schemas from '../src/schemas/common';

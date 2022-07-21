@@ -1,4 +1,11 @@
-import { Actor, DatabaseTransactionHandler, Item, ItemService, UnknownExtra } from 'graasp';
+import {
+  Actor,
+  DatabaseTransactionHandler,
+  Item,
+  ItemService,
+  TaskStatus,
+  UnknownExtra,
+} from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { ItemNotFound, ItemNotPublic } from '../../../util/errors';
@@ -29,7 +36,7 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = 'RUNNING';
+    this.status = TaskStatus.RUNNING;
 
     const { itemId } = this.input;
     this.targetId = itemId;
@@ -43,6 +50,6 @@ export class GetPublicItemTask<E extends UnknownExtra> extends BasePublicItemTas
     if (!isPublic) throw new ItemNotPublic(this.targetId);
 
     this._result = item;
-    this.status = 'OK';
+    this.status = TaskStatus.OK;
   }
 }

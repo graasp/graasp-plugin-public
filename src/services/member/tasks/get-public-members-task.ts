@@ -1,4 +1,4 @@
-import { Actor, DatabaseTransactionHandler, Member, MemberService } from 'graasp';
+import { Actor, DatabaseTransactionHandler, Member, MemberService, TaskStatus } from '@graasp/sdk';
 
 import { BasePublicMemberTask } from './base-public-member-task';
 
@@ -20,7 +20,7 @@ export class GetPublicMembersTask extends BasePublicMemberTask<Member[]> {
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = 'RUNNING';
+    this.status = TaskStatus.RUNNING;
 
     const { memberIds } = this.input;
     this.targetId = memberIds?.join(',');
@@ -32,6 +32,6 @@ export class GetPublicMembersTask extends BasePublicMemberTask<Member[]> {
     );
 
     this._result = members;
-    this.status = 'OK';
+    this.status = TaskStatus.OK;
   }
 }

@@ -1,4 +1,4 @@
-import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
+import { Actor, DatabaseTransactionHandler, ItemService } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { ItemNotPublic } from '../../..';

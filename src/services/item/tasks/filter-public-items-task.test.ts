@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 
-import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
+import { Actor, DatabaseTransactionHandler, ItemService } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { PUBLIC_ITEM_CHILDREN, PUBLIC_TAG_ID, buildMember } from '../../../../test/constants';
