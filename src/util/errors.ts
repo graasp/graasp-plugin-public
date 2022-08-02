@@ -1,22 +1,8 @@
-import { GraaspError, GraaspErrorDetails } from 'graasp';
+import { ErrorFactory } from '@graasp/sdk';
 
-export class GraaspPublicError implements GraaspError {
-  name: string;
-  code: string;
-  message: string;
-  statusCode?: number;
-  data?: unknown;
-  origin: 'plugin' | string;
+import { PLUGIN_NAME } from './constants';
 
-  constructor({ code, statusCode, message }: GraaspErrorDetails, data?: unknown) {
-    this.name = code;
-    this.code = code;
-    this.message = message;
-    this.statusCode = statusCode;
-    this.data = data;
-    this.origin = 'plugin';
-  }
-}
+export const GraaspPublicError = ErrorFactory(PLUGIN_NAME);
 
 export class ItemNotFound extends GraaspPublicError {
   constructor(data?: unknown) {

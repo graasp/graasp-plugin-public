@@ -1,4 +1,4 @@
-import { Actor, DatabaseTransactionHandler, ItemService } from 'graasp';
+import { Actor, DatabaseTransactionHandler, ItemService, TaskStatus } from '@graasp/sdk';
 import { ItemTagService } from 'graasp-item-tags';
 
 import { PublicItemService } from '../db-service';
@@ -29,7 +29,7 @@ export class GetPublicItemIdsWithTagsTask extends BasePublicItemTask<readonly st
   }
 
   async run(handler: DatabaseTransactionHandler): Promise<void> {
-    this.status = 'RUNNING';
+    this.status = TaskStatus.RUNNING;
 
     const { tagIds } = this.input;
 
@@ -43,6 +43,6 @@ export class GetPublicItemIdsWithTagsTask extends BasePublicItemTask<readonly st
     });
     this._result = itemIds;
 
-    this.status = 'OK';
+    this.status = TaskStatus.OK;
   }
 }
