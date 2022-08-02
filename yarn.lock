@@ -3507,10 +3507,10 @@ __metadata:
 
 "graasp-item-tags@github:graasp/graasp-item-tags":
   version: 0.1.0
-  resolution: "graasp-item-tags@https://github.com/graasp/graasp-item-tags.git#commit=59a4a525b47acd73948a9b5fba70ece000073300"
+  resolution: "graasp-item-tags@https://github.com/graasp/graasp-item-tags.git#commit=c21f5e454b939928298590b41c25055aab8b9151"
   dependencies:
     http-status-codes: 2.2.0
-  checksum: ebd32e6ef983f599a84f08246acb712aa656e89902920cd8b152ebedeff47ba91fa31e20dcf0e3c075b8f83497551d8975e1160dcce42962fa9b558803344469
+  checksum: 89d2bf31538b1d0e342e364aaef8ba1f0198deef7323506be52bc72247afc078b00cae538c889995161935849c34e9a8c751a11c3defeb4e57a476ccccf801ca
   languageName: node
   linkType: hard
 
